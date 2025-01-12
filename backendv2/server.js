@@ -47,14 +47,14 @@ app.get("/load", (req, res) => {
 // Endpoint to run the Python script
 app.post("/generate-problem", (req, res) => {
   const scriptPath = "./generate_problem.py";
-  const args = "problem.json";
+  const args = "%userprofile%/downloads/problem.json";
   const resultFilePath = path.join(
     __dirname,
     "MedRoPax-Solver",
     "problem.json"
   );
   exec(
-    `python ${scriptPath} ${args}`,
+    `.\\vrp-venv\\Scripts\\python.exe ${scriptPath} ${args}`,
     { cwd: "./MedRoPax-Solver" },
     (error, stdout, stderr) => {
       if (error) {
@@ -85,7 +85,8 @@ app.post("/generate-problem", (req, res) => {
 
 app.post("/solve-generated-problem", (req, res) => {
   const scriptPath = "./solver.py";
-  const args = "problem.json result.json";
+  const args =
+    "%userprofile%/Downloads/problem.json %userprofile%/Downloads/result.json";
   const resultFilePath = path.join(__dirname, "MedRoPax-Solver", "result.json");
 
   exec(
