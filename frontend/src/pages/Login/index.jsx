@@ -20,7 +20,8 @@ const Login = () => {
   const handleLogin = (event) => {
     event.preventDefault()
     if (username === 'admin' && password === 'admin') navigate('/admin')
-    else if (username === 'driver' && password === 'driver') navigate('/driver')
+    else if (username === 'driver' && password === 'driver')
+      navigate('/driver/1')
     else if (username === 'packer' && password === 'packer')
       navigate('/packer/vehicle/1')
     else if (username === 'solver' && password === 'solver') navigate('/solver')

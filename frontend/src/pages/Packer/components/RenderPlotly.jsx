@@ -187,6 +187,12 @@ const RenderPlotly = ({ container }) => {
           data={plotData}
           layout={layout}
           style={{ width: '100%', height: '70vh' }}
+          config={{
+            toImageButtonOptions: {
+              format: 'png',
+              scale: 20,
+            },
+          }}
           onRelayout={handleRelayout}
         />
       </div>

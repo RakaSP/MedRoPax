@@ -1,5 +1,5 @@
 @echo off
 cd ..\frontend
 start npm start
-cd ..\backend
+cd ..\backendv2
 node server.js

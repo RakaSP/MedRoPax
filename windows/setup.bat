@@ -1,5 +1,5 @@
 @echo off
 cd ..\frontend
 start npm install
-cd ..\backend
+cd ..\backendv2
 npm install

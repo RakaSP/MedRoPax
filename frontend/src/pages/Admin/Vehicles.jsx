@@ -12,7 +12,7 @@ const Vehicles = () => {
 
   const handleListClick = (index) => {
     setActiveStatus(index)
-    setCurrentPage(1) // Reset to the first page when changing filters
+    setCurrentPage(1)
   }
 
   const handleInputChange = (event) => {
@@ -38,11 +38,13 @@ const Vehicles = () => {
       const statusMapping = {
         1: 'available',
         2: 'ready',
-        3: 'In Transit',
+        3: 'in transit',
         4: 'maintenance',
       }
       const filteredData = vehicles.filter(
-        (item) => item.status === statusMapping[activeStatus]
+        (item) =>
+          item.status.toLowerCase() ===
+          statusMapping[activeStatus].toLowerCase()
       )
       setFilteredVehiclesData(filteredData)
     }
@@ -54,14 +56,14 @@ const Vehicles = () => {
     const currentVehicles = filteredVehiclesData.slice(startIndex, endIndex)
 
     return (
-      <div className="flex flex-row flex-wrap justify-start mb-4 gap-4">
+      <div className="grid justify-start mb-4 gap-4 grid-cols-2 ">
         {currentVehicles.map((vehicle) => (
           <div
-            className="w-[24%] relative py-4 px-3 rounded-md border-2 border-gray-200 shadow-md bg-bg_card"
+            className="flex-1 relative py-4 px-3 rounded-md border-2 border-gray-200 shadow-md bg-bg_card text-3xl"
             key={vehicle.id}
           >
             <div className="flex flex-row justify-between mb-1 font-poppins">
-              <div className=" font-[500]">
+              <div className="font-[500]">
                 Vehicle
                 <span className="font-semibold"> #{vehicle.id}</span>
               </div>
@@ -73,12 +75,12 @@ const Vehicles = () => {
               <div className="basis-2/5 flex flex-col">
                 <div>
                   <div className="text-text_primary text-sm">Shipment ID</div>
-                  <div className="font-semibold">1</div>
+                  <div className="font-semibold">{vehicle.shipmentID}</div>
                 </div>
                 <div>
                   <div className="text-text_primary text-sm">Weight (KG)</div>
                   <div className="font-semibold">
-                    {vehicle.weight}/{vehicle.capacity}
+                    {vehicle.weight}/{vehicle.maxWeight}
                   </div>
                 </div>
                 {/* <div>
@@ -92,7 +94,7 @@ const Vehicles = () => {
                 <img
                   src={vehicle.imgUrl}
                   alt={vehicle.imgUrl}
-                  className="h-[100px] object-fit"
+                  className="object-fit"
                 />
                 {vehicle.refrigerated && (
                   <img
@@ -145,7 +147,9 @@ const Vehicles = () => {
             />
           </form>
         </div>
-        <div className="m-4">{renderCardRow()}</div>
+
+        {renderCardRow()}
+
         <div className="flex justify-center mt-4">
           <ul className="flex">
             {Array.from({ length: totalPages }, (_, index) => (

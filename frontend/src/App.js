@@ -22,6 +22,7 @@ import DriverProfile from './pages/Driver/Profile'
 import Packer from './pages/Packer'
 import PackerVehicle from './pages/Packer/Vehicle'
 import PackerCardboard from './pages/Packer/Cardboard'
+
 import OrderList from './pages/Admin/OrderList'
 
 import Solver from './pages/Solver'
@@ -46,13 +47,16 @@ function App() {
             <Route path="trouble" element={<Troubles />}></Route>
           </Route>
           <Route path="/driver" element={<Driver />}>
-            <Route path="" element={<DriverDashboard />}></Route>
+            <Route path=":id" element={<DriverDashboard />}></Route>
             <Route path="report" element={<DriverReport />}></Route>
             <Route path="profile" element={<DriverProfile />}></Route>
           </Route>
           <Route path="packer" element={<Packer />}>
             <Route path="vehicle/:id" element={<PackerVehicle />} />
-            <Route path="cardboard/:id" element={<PackerCardboard />} />
+            <Route
+              path="vehicle/:vehicle_id/cardboard/:cardboard_id"
+              element={<PackerCardboard />}
+            />
           </Route>
           <Route path="solver" element={<Solver />}>
             <Route path="" element={<SolverMain />}></Route>

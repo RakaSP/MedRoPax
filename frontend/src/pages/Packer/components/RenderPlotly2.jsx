@@ -56,9 +56,9 @@ const RenderPlotly = ({ container }) => {
   const [itemCount, setItemCount] = useState(1)
   const containerSize = [
     {
-      SizeX: container.SizeX,
-      SizeY: container.SizeY,
-      SizeZ: container.SizeZ,
+      SizeX: container.box_size[0],
+      SizeY: container.box_size[1],
+      SizeZ: container.box_size[2],
     },
   ]
 
@@ -452,6 +452,12 @@ const RenderPlotly = ({ container }) => {
           data={[...plotData, ...gridLines]}
           layout={layout}
           style={{ width: '100%', height: '70vh' }}
+          config={{
+            toImageButtonOptions: {
+              format: 'png',
+              scale: 20,
+            },
+          }}
           onRelayout={handleRelayout}
         />
       </div>
