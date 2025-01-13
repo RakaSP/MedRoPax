@@ -2,7 +2,6 @@ import React, { useState, useRef } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGear, faTimes } from '@fortawesome/free-solid-svg-icons'
 import axios from 'axios'
-import { items } from '../../constants/index'
 
 const Vehicle = () => {
   const [uploading, setUploading] = useState(false)
@@ -42,25 +41,70 @@ const Vehicle = () => {
   }
 
   const handleSolve = () => {
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = () => {
-        const content = reader.result
-        const blob = new Blob([content], { type: 'application/json' })
-        const url = URL.createObjectURL(blob)
-        const a = document.createElement('a')
-        a.href = url
-        a.download = `${file.name
-          .split('.')
-          .slice(0, -1)
-          .join('.')}_solved.json`
-        document.body.appendChild(a)
-        a.click()
-        document.body.removeChild(a)
-        URL.revokeObjectURL(url)
-      }
-      reader.readAsText(file)
-    }
+    const formData = new FormData()
+    formData.append('file', file) // 'file' should be the file object
+
+    axios
+      .post('http://localhost:5000/solve', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then((response) => {
+        let problem = response.data.problem
+        localStorage.setItem('problem', JSON.stringify(problem))
+
+        let result = response.data.result
+
+        let arrivalTimeList = result.arrival_time_list
+
+        const startTime = '09:00'
+
+        arrivalTimeList = arrivalTimeList.map((arrivalTime) => {
+          return arrivalTime.map((deliveryTime) => {
+            const [hours, minutes] = startTime.split(':').map(Number)
+            const totalMinutes = hours * 60 + minutes + Math.floor(deliveryTime)
+
+            const newHours = Math.floor(totalMinutes / 60)
+            const newMinutes = totalMinutes % 60
+
+            return `${String(newHours).padStart(2, '0')}:${String(
+              newMinutes
+            ).padStart(2, '0')}`
+          })
+        })
+
+        localStorage.setItem('arrivalTimeList', JSON.stringify(arrivalTimeList))
+
+        let tourList = result.tour_list
+
+        tourList = tourList.map((data, index) => {
+          const arrivalTime = arrivalTimeList[index]
+          return data.map((order, index) => {
+            let orderDetail = problem.order_list[index]
+
+            orderDetail.item_list = orderDetail.item_list.map((itemId) => {
+              const itemDetail = problem.product_type.find(
+                (product) => product.id === itemId
+              )
+              return { ...itemDetail }
+            })
+            return {
+              id: orderDetail,
+              arrivalTime: arrivalTime[index],
+              ...orderDetail,
+              delivered: false,
+            }
+          })
+        })
+
+        localStorage.setItem('mappedData', JSON.stringify(tourList))
+        localStorage.setItem('result', JSON.stringify(result))
+        alert('Problem solved successfully')
+      })
+      .catch((error) => {
+        console.error('Error uploading file:', error)
+      })
   }
 
   const handleCancel = () => {
@@ -68,134 +112,20 @@ const Vehicle = () => {
     setUploadProgress(0)
     setFile(null)
   }
+
   const handleClickGenerateProblem = async () => {
     try {
       const response = await axios.post(
         'http://localhost:5000/generate-problem'
       )
-      console.log('problem: ', response.data.problem)
+
       localStorage.setItem('problem', JSON.stringify(response.data.problem))
+      alert('Problem generated successfully')
     } catch (error) {
       console.error('Error generating problem:', error)
     }
   }
 
-  const handleClickSolveGeneratedProblem = async () => {
-    try {
-      const response = await axios.post(
-        'http://localhost:5000/solve-generated-problem'
-      )
-      console.log('result: ', response.data.result)
-      localStorage.setItem('result', JSON.stringify(response.data.result))
-
-      let shipments = response.data.result.tour_list
-      const orderList = JSON.parse(localStorage.getItem('problem')).order_list
-      shipments = shipments.map((shipment) => {
-        return shipment.map((orderId) => {
-          return orderList.find((order) => order.id === String(orderId))
-        })
-      })
-
-      let arrivalTimeList = JSON.parse(
-        localStorage.getItem('result')
-      ).arrival_time_list
-
-      const startTime = '09:00' // Waktu mulai pengiriman
-
-      arrivalTimeList = arrivalTimeList.map((arrivalTime) => {
-        return arrivalTime.map((deliveryTime) => {
-          const [hours, minutes] = startTime.split(':').map(Number)
-          const totalMinutes = hours * 60 + minutes + Math.floor(deliveryTime) // Pembulatan menit
-
-          const newHours = Math.floor(totalMinutes / 60)
-          const newMinutes = totalMinutes % 60
-
-          return `${String(newHours).padStart(2, '0')}:${String(
-            newMinutes
-          ).padStart(2, '0')}`
-        })
-      })
-
-      localStorage.setItem('arrivalTimeList', JSON.stringify(arrivalTimeList))
-
-      shipments = shipments.map((shipment) => {
-        return shipment.map((order) => {
-          return order.item_list.map((item) => {
-            const itemDetail = items.find((detail) => item.id === detail.id)
-            return {
-              ...item,
-              name: itemDetail.name,
-              price: itemDetail.price,
-            }
-          })
-        })
-      })
-
-      console.log(shipments)
-    } catch (error) {
-      console.error('Error solving the generated problem', error)
-    }
-  }
-
-  const loadData = async () => {
-    try {
-      const response = await axios.get('http://localhost:5000/load')
-      console.log(response.data)
-      let problem = response.data.problem
-      localStorage.setItem('problem', JSON.stringify(problem))
-
-      let result = response.data.result
-
-      let arrivalTimeList = result.arrival_time_list
-
-      const startTime = '09:00'
-
-      arrivalTimeList = arrivalTimeList.map((arrivalTime) => {
-        return arrivalTime.map((deliveryTime) => {
-          const [hours, minutes] = startTime.split(':').map(Number)
-          const totalMinutes = hours * 60 + minutes + Math.floor(deliveryTime)
-
-          const newHours = Math.floor(totalMinutes / 60)
-          const newMinutes = totalMinutes % 60
-
-          return `${String(newHours).padStart(2, '0')}:${String(
-            newMinutes
-          ).padStart(2, '0')}`
-        })
-      })
-
-      localStorage.setItem('arrivalTimeList', JSON.stringify(arrivalTimeList))
-
-      let tourList = result.tour_list
-
-      tourList = tourList.map((data, index) => {
-        const tour = tourList[index]
-        const arrivalTime = arrivalTimeList[index]
-        return data.map((order, index) => {
-          let orderDetail = problem.order_list[order]
-          orderDetail.item_list = orderDetail.item_list.map((itemId) => {
-            const itemDetail = problem.product_type.find(
-              (product) => product.id === itemId
-            )
-            return { ...itemDetail }
-          })
-          return {
-            id: orderDetail,
-            arrivalTime: arrivalTime[index],
-            ...orderDetail,
-            delivered: false,
-          }
-        })
-      })
-
-      console.log(tourList)
-
-      localStorage.setItem('mappedData', JSON.stringify(tourList))
-      localStorage.setItem('result', JSON.stringify(result))
-    } catch (error) {
-      console.error(error)
-    }
-  }
   return (
     <div className="py-10 px-10">
       <h4 className="text-3xl font-bold text-text_primary mb-5">Solver</h4>
@@ -206,18 +136,6 @@ const Vehicle = () => {
           className="bg-blue-500 text-white py-2 px-4 text-lg rounded-md mr-2 hover:bg-blue-600"
         >
           Click here to generate problem
-        </button>
-        <button
-          onClick={handleClickSolveGeneratedProblem}
-          className="bg-green-500 text-white py-2 px-4 text-lg rounded-md hover:bg-green-600 mr-2"
-        >
-          Click here to solve your generated problem
-        </button>
-        <button
-          onClick={loadData}
-          className="bg-gray-500 text-white py-2 px-4 text-lg rounded-md mt-2 hover:bg-gray-600"
-        >
-          Load
         </button>
       </div>
 

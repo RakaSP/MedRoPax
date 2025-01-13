@@ -3,10 +3,23 @@ const cors = require("cors");
 const { exec } = require("child_process");
 const path = require("path");
 const fs = require("fs");
+const multer = require("multer");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Multer storage configuration
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "MedRoPax-Solver/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
 
 app.get("/load", (req, res) => {
   // load problem
@@ -81,6 +94,93 @@ app.post("/generate-problem", (req, res) => {
       });
     }
   );
+});
+
+app.post("/solve", upload.single("file"), (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).send("No file uploaded.");
+    }
+
+    const uploadedFilePath = req.file.path;
+    const originalFilename = req.file.originalname;
+    const originalFileNameWithoutExt = req.file.originalname.replace(
+      ".json",
+      ""
+    );
+
+    const targetPath = path.join(
+      __dirname,
+      "MedRoPax-Solver",
+      originalFilename
+    );
+    const scriptPath = "./solver.py";
+    const args = `${originalFilename} ${originalFileNameWithoutExt}_result.json`;
+
+    const resultFilePath = path.join(
+      __dirname,
+      "MedRoPax-Solver",
+      `${originalFileNameWithoutExt}_result.json`
+    );
+
+    console.log(resultFilePath);
+
+    console.log(`Running python script: python ${scriptPath} ${args}`);
+
+    exec(
+      `python ${scriptPath} ${args}`,
+      { cwd: "./MedRoPax-Solver" },
+      (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Error executing Python script: ${error.message}`);
+          return res.status(500).json({ success: false, error: error.message });
+        }
+
+        if (stderr) {
+          console.warn(`Python stderr: ${stderr}`);
+        }
+        let result, problem;
+        fs.readFile(resultFilePath, "utf8", (err, data) => {
+          if (err) {
+            console.error(`Error reading result file: ${err.message}`);
+            return res.status(500).json({ success: false, error: err.message });
+          }
+
+          try {
+            result = JSON.parse(data);
+            fs.readFile(targetPath, "utf8", (err, data) => {
+              if (err) {
+                console.error(`Error reading result file: ${err.message}`);
+                return res
+                  .status(500)
+                  .json({ success: false, error: err.message });
+              }
+
+              try {
+                problem = JSON.parse(data);
+                return res.json({ success: true, problem, result });
+              } catch (parseError) {
+                console.error(
+                  `Error parsing result file: ${parseError.message}`
+                );
+                return res
+                  .status(500)
+                  .json({ success: false, error: parseError.message });
+              }
+            });
+          } catch (parseError) {
+            console.error(`Error parsing result file: ${parseError.message}`);
+            return res
+              .status(500)
+              .json({ success: false, error: parseError.message });
+          }
+        });
+      }
+    );
+  } catch (e) {
+    console.log(e.message);
+    return res.status(500).json({ success: false, error: e.message });
+  }
 });
 
 app.post("/solve-generated-problem", (req, res) => {

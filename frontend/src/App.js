@@ -52,9 +52,9 @@ function App() {
             <Route path="profile" element={<DriverProfile />}></Route>
           </Route>
           <Route path="packer" element={<Packer />}>
-            <Route path="vehicle/:id" element={<PackerVehicle />} />
+            <Route path="vehicle/:vehicleId" element={<PackerVehicle />} />
             <Route
-              path="vehicle/:vehicle_id/cardboard/:cardboard_id"
+              path="vehicle/:vehicleId/cardboard/:cardboardId"
               element={<PackerCardboard />}
             />
           </Route>

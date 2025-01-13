@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink, useNavigate, useParams } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faHouse,
@@ -11,15 +11,17 @@ import styles from '../../../styles/style'
 
 const AdminNav = () => {
   const [activeNavItemIndex, setactiveNavItemIndex] = useState(null)
-  const navigate = useNavigate()
   const handleNavItemClick = (index) => {
     setactiveNavItemIndex(index === activeNavItemIndex ? null : index)
   }
-
+  let { id } = useParams()
+  id = Number(id)
+  const vehicleList = JSON.parse(localStorage.getItem('problem')).vehicle_list
+  console.log(vehicleList)
   const links = [
     {
       title: 'Dashboard',
-      link: '/driver/1',
+      link: `/driver/${vehicleList[0].id}`,
       icon: faHouse,
       subLinks: [],
     },
@@ -35,7 +37,7 @@ const AdminNav = () => {
 
   const handleSelectVehicle = (e) => {
     const selectedValue = e.target.value
-    navigate(`/driver/${selectedValue}`)
+    window.location.href = `/driver/${selectedValue}`
   }
 
   return (
@@ -96,11 +98,14 @@ const AdminNav = () => {
         </div>
         <div className="flex flex-col">
           <label for="myDropdown">Choose an option:</label>
-          <select id="myDropdown" name="options" onChange={handleSelectVehicle}>
-            {[...Array(vehicleNum)].map((_, index) => (
-              <option key={index} value={index + 1}>
-                Vehicle: {index + 1}
-              </option>
+          <select
+            id="myDropdown"
+            name="options"
+            onChange={handleSelectVehicle}
+            value={id}
+          >
+            {vehicleList.map((vehicle) => (
+              <option value={vehicle.id}>Vehicle: {vehicle.id}</option>
             ))}
           </select>
         </div>

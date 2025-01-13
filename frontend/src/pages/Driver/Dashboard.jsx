@@ -3,8 +3,7 @@ import { useOutletContext, useParams } from 'react-router-dom'
 import ReactStars from 'react-rating-stars-component'
 import { truck3d } from '../../assets/EmployeePage'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser, faPhone } from '@fortawesome/free-solid-svg-icons'
-import { customers, items } from '../../constants'
+import { faUser, faPhone, faCheck } from '@fortawesome/free-solid-svg-icons'
 import MapPlaceholder from './components/MapPlaceholder'
 
 const Dashboard = () => {
@@ -26,31 +25,39 @@ const Dashboard = () => {
   //     return maxScore - score
   //   }
   // })
-  const { id } = useParams()
-
-  const noRoute =
-    JSON.parse(localStorage.getItem('result')).tour_list[id - 1].length > 0
-      ? false
-      : true
-  console.log(noRoute)
+  let { id } = useParams()
+  id = Number(id)
+  const indexOfVehicle = JSON.parse(
+    localStorage.getItem('problem')
+  ).vehicle_list.findIndex((vehicle) => vehicle.id === id)
+  const noRoute = !(
+    Array.isArray(
+      JSON.parse(localStorage.getItem('result'))?.tour_list?.[indexOfVehicle]
+    ) &&
+    JSON.parse(localStorage.getItem('result'))?.tour_list?.[indexOfVehicle]
+      .length > 0
+  )
 
   const vehicleDetails = JSON.parse(localStorage.getItem('problem'))
-    .vehicle_list[id - 1]
+    .vehicle_list[indexOfVehicle]
   const depotCoord = JSON.parse(localStorage.getItem('problem')).depot_coord
   const orderList = JSON.parse(localStorage.getItem('problem')).order_list
   const distanceMatrix = JSON.parse(
     localStorage.getItem('problem')
   ).distance_matrix
   let orderIndexList = []
-  let data = JSON.parse(localStorage.getItem('mappedData'))[id - 1]
+  let data = JSON.parse(localStorage.getItem('mappedData'))[indexOfVehicle]
+
   let origin, destination
   for (let i = 0; i < data.length; i++) {
-    if (data[i].delivered == false && i == 0) {
-      origin = depotCoord
+    if (data[i].delivered === false) {
+      if (i === 0) {
+        origin = depotCoord
+      } else {
+        origin = data[i - 1].coord
+      }
       destination = data[i].coord
-    } else {
-      origin = data[i - 1].coord
-      destination = data[i].coord
+      break
     }
   }
 
@@ -70,9 +77,17 @@ const Dashboard = () => {
 
   const rating = (Math.random() * (5 - 4) + 4).toFixed(2)
   const orderIndex = 0
+  const handleClickArrive = (index) => {
+    let mappedData = JSON.parse(localStorage.getItem('mappedData'))
+    mappedData[indexOfVehicle]?.[index] &&
+      (mappedData[indexOfVehicle][index].delivered = true)
+
+    localStorage.setItem('mappedData', JSON.stringify(mappedData))
+    window.location.reload()
+  }
   return (
     <div className="h-full min-h-[100vh] w-full flex flex-row">
-      <div className="p-[10px] px-10 w-[40%] h-full">
+      <div className="p-[10px] px-10 w-[40%] max-h-full h-screen overflow-y-scroll">
         <div className="w-full flex flex-row justify-between items-center">
           <div className="flex flex-col">
             <h4 className="font-poppins text-text_primary font-bold text-xl">
@@ -157,11 +172,10 @@ const Dashboard = () => {
                 </div>
               </div>
               {data.map((order, index) => {
-                console.log(order)
-
                 const orderIndex = orderList.findIndex(
                   (orderA) => orderA.id === order.id
                 )
+
                 orderIndexList.push(orderIndex)
 
                 const distance =
@@ -171,16 +185,26 @@ const Dashboard = () => {
                         orderIndexList[index] + 1
                       ]
 
-                console.log(orderIndexList)
+                let showButton = false
+                if (index === 0 && order.delivered === false) {
+                  showButton = true
+                } else if (
+                  index > 0 &&
+                  order.delivered === false &&
+                  data[index - 1].delivered === true
+                ) {
+                  showButton = true
+                }
+
                 return (
                   <div
                     key={order.id}
-                    className="w-full flex flex-row items-stretch mb-4"
+                    className="w-full flex flex-row items-stretch mb-4 "
                   >
                     <div className="flex flex-row mr-4 pt-2 w-[80px] justify-between relative">
-                      <p className="text-text_primary text-xs opacity-60 font-semibold">
+                      <p className="text-text_primary text-xs opacity-60 font-semibold w-full">
                         <span className="block">{order.arrivalTime}</span>
-                        <span className="block mt-1 whitespace-nowrap">
+                        <span className="block mt-1 whitespace-normal">
                           ({distance.toFixed(2)} km)
                         </span>
                       </p>
@@ -188,7 +212,8 @@ const Dashboard = () => {
                         <div className="absolute w-1 h-[calc(100%+20px)] bg-highlight z-10 bg-opacity-40"></div>
                       </div>
                     </div>
-                    <div className="w-full bg-bg_card rounded-lg shadow-lg p-4">
+
+                    <div className="w-full bg-bg_card rounded-lg shadow-lg p-4 relative">
                       <div className="w-full flex flex-row justify-between items-center font-poppins">
                         <h5 className="text-text_primary font-semibold text-lg">
                           Order #{order.id}
@@ -225,12 +250,6 @@ const Dashboard = () => {
                             <FontAwesomeIcon icon={faPhone} className="mr-2" />
                             +62 812 7113 9285
                           </p>
-                          {/* <p>
-                        <FontAwesomeIcon icon={faMoneyBill} className="mr-2" />
-                        Rp.{' '}
-                        {Math.floor(Math.random() * (200000 - 100000 + 1)) +
-                          50000}
-                      </p> */}
                         </div>
                         <div className="flex-1">
                           <ul className="list-decimal">
@@ -240,6 +259,14 @@ const Dashboard = () => {
                           </ul>
                         </div>
                       </div>
+                      {showButton && (
+                        <button
+                          className="absolute right-6 bottom-4 bg-green-200 h-6 w-6 flex items-center justify-center rounded-md"
+                          onClick={() => handleClickArrive(index)}
+                        >
+                          <FontAwesomeIcon icon={faCheck} />
+                        </button>
+                      )}
                     </div>
                   </div>
                 )

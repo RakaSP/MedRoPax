@@ -1,6 +1,8 @@
 import React from 'react'
 
 const MapPlaceholder = ({ origin, destination }) => {
+  console.log(origin)
+  console.log(destination)
   return (
     <div className="h-full w-full">
       <iframe

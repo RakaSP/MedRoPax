@@ -5,20 +5,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDownload } from '@fortawesome/free-solid-svg-icons'
 import { useParams } from 'react-router-dom'
 const Vehicle = () => {
-  let { id } = useParams()
-  id = Number(id)
-  console.log(id)
+  let { vehicleId } = useParams()
+  vehicleId = Number(vehicleId)
+
   const vehicleList = JSON.parse(localStorage.getItem('problem')).vehicle_list
   const indexOfVehicle = vehicleList.findIndex(
-    (vehicleDetail) => vehicleDetail.id === id
+    (vehicleDetail) => vehicleDetail.id === vehicleId
   )
-  console.log(indexOfVehicle)
+
   let vehicleExist = indexOfVehicle === -1 ? false : true
   let container = {}
 
   if (vehicleExist) {
     const vehicleInformation = vehicleList[indexOfVehicle]
-    console.log(vehicleInformation)
+
     const packingInformation =
       JSON.parse(localStorage.getItem('result')).packing_information[
         indexOfVehicle
@@ -29,7 +29,6 @@ const Vehicle = () => {
       ItemList: packingInformation,
     }
 
-    console.log(container)
     container.ItemList = container.ItemList.map((item) => {
       const mappedData = {
         type: item.type,
@@ -41,11 +40,9 @@ const Vehicle = () => {
         PosY: item.pos[1],
         PosZ: item.pos[2],
       }
-      console.log(mappedData)
+
       return mappedData
     })
-
-    console.log(container)
   }
   return (
     <div className="py-[10px] px-10">
@@ -66,11 +63,11 @@ const Vehicle = () => {
               <div className="w-[360px] flex flex-col border-2 border-[#6F6F70] rounded-lg mt-4 h-full max-h-[720px] bg-white p-[20px] overflow-y-scroll">
                 {container.ItemList.map((item) => (
                   <div
-                    key={item.ID}
+                    key={item.id}
                     className="border-2 border-[#6F6F70] rounded-md w-full p-4 mb-4"
                   >
                     <h3>
-                      {item.Name}: {item.ID}
+                      {item.type}: {item.id}
                     </h3>
                     <div>
                       Pos X: {item.PosX} Pos Y: {item.PosY} Pos Z: {item.PosZ}
@@ -81,6 +78,11 @@ const Vehicle = () => {
                     </div>
                   </div>
                 ))}
+                {container.ItemList.length === 0 && (
+                  <>
+                    <p>No Packing Scheduled</p>
+                  </>
+                )}
               </div>
             </div>
           </div>

@@ -16,22 +16,11 @@ const RenderPlotly = ({ container }) => {
     Math.floor(container.SizeY / 10),
     Math.floor(container.SizeZ / 10),
   ]
+
   const layout = {
     scene: {
       camera: {
         eye: cam,
-      },
-      xaxis: {
-        tickvals: Array.from({ length: ticks[0] }, (_, i) => i * 10),
-        ticktext: Array.from({ length: ticks[0] }, (_, i) => i * 10),
-      },
-      yaxis: {
-        tickvals: Array.from({ length: ticks[1] }, (_, i) => i * 10),
-        ticktext: Array.from({ length: ticks[1] }, (_, i) => i * 10),
-      },
-      zaxis: {
-        tickvals: Array.from({ length: ticks[2] }, (_, i) => i * 10),
-        ticktext: Array.from({ length: ticks[2] }, (_, i) => i * 10),
       },
     },
   }
