@@ -21,6 +21,7 @@ from faker import Faker
 from faker.providers import BaseProvider
 import random
 
+
 class UniqueNameProvider(BaseProvider):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -53,14 +54,16 @@ class UniqueNameProvider(BaseProvider):
 
     def customer_name(self):
         titles = ["Mr.", "Ms.", "Dr.", "Mrs.", ""]
-        first_names = ["John", "Jane", "Alex", "Emily", "Chris", "Sarah", "Michael", "Laura", "David", "Emma"]
-        last_names = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Miller", "Davis", "Garcia", "Martinez", "Hernandez"]
+        first_names = ["John", "Jane", "Alex", "Emily", "Chris",
+                       "Sarah", "Michael", "Laura", "David", "Emma"]
+        last_names = ["Smith", "Johnson", "Williams", "Brown", "Jones",
+                      "Miller", "Davis", "Garcia", "Martinez", "Hernandez"]
         return self._generate_unique_name([titles, first_names, last_names])
+
 
 fake = Faker()
 unique_provider = UniqueNameProvider(fake)
 fake.add_provider(unique_provider)
-
 
 
 def generate_product_types() -> list[Medicine]:
@@ -75,12 +78,11 @@ def generate_product_types() -> list[Medicine]:
         need_refrigeration = np.random.uniform(0, 1) > 0.5
         is_fragile = np.random.uniform(0, 1) > 0.5
         name_ = fake.medicine_name()
-        product_types += [Medicine(id_, weight, size, need_refrigeration, is_fragile, name_)]
+        product_types += [Medicine(id_, weight, size,
+                                   need_refrigeration, is_fragile, name_)]
 
     return product_types
-        
-        
-        
+
 
 def generate_orders(product_types: list[Medicine]) -> list[Order]:
     orders = []
@@ -90,12 +92,14 @@ def generate_orders(product_types: list[Medicine]) -> list[Order]:
         for __ in range(10):
             ordered_products += [random.choice(product_types)]
         id_ = uuid4().int
-        coords = (np.random.uniform(-6.1, -6.3), np.random.uniform(106.7, 106.9))
+        coords = (np.random.uniform(-6.1, -6.3),
+                  np.random.uniform(106.7, 106.9))
         name_ = fake.customer_name()
 
         orders += [Order(id_, name_, ordered_products, coords)]
-        
+
     return orders
+
 
 def generate_vehicles(max_duration) -> list[Vehicle]:
     vehicles = []
@@ -111,10 +115,11 @@ def generate_vehicles(max_duration) -> list[Vehicle]:
         vehicle_type = fake.vehicle_name()
         id_ = uuid4().int
 
-        vehicles += [create_vehicle(size, max_weight, cost_per_km, cost_per_kg, is_reefer, max_duration, vehicle_type, id_)]
-    
+        vehicles += [create_vehicle(size, max_weight, cost_per_km,
+                                    cost_per_kg, is_reefer, max_duration, vehicle_type, id_)]
+
     return vehicles
-        
+
 
 def generate_cardboard_boxes() -> list[Cardboard]:
     cardboard_boxes = []
@@ -128,12 +133,14 @@ def generate_cardboard_boxes() -> list[Cardboard]:
         size = np.array([length, width, height])
 
         cardboard_boxes += [Cardboard(id_, size, max_weight, name=name_)]
-    
+
     return cardboard_boxes
+
 
 def serialize_to_file(obj, file_path):
     with open(file_path, "w") as file:
         json.dump(obj.to_dict(), file)
+
 
 def deserialize_from_file(cls, file_path):
     with open(file_path, "r") as file:
@@ -149,15 +156,17 @@ def run():
     cardboard_list = generate_cardboard_boxes()
     vehicle_list = generate_vehicles(max_duration)
 
-    depot_coord = [6.5, 143.5]
+    depot_coord = (np.random.uniform(-6.1, -6.3),
+                   np.random.uniform(106.7, 106.9))
 
     problem = VRP3D(product_types,
-                        vehicle_list,
-                        order_list,
-                        cardboard_list,
-                        depot_coord,
-                        max_duration)
+                    vehicle_list,
+                    order_list,
+                    cardboard_list,
+                    depot_coord,
+                    max_duration)
     serialize_to_file(problem, sys.argv[1])
+
 
 if __name__ == "__main__":
     seed(datetime.datetime.now().timestamp())
