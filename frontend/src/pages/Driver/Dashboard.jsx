@@ -175,7 +175,7 @@ const Dashboard = () => {
                 const orderIndex = orderList.findIndex(
                   (orderA) => orderA.id === order.id
                 )
-
+                console.log(index, orderIndex)
                 orderIndexList.push(orderIndex)
 
                 const distance =
@@ -209,7 +209,11 @@ const Dashboard = () => {
                         </span>
                       </p>
                       <div className="w-4 h-4 bg-highlight rounded-full flex justify-center">
-                        <div className="absolute w-1 h-[calc(100%+20px)] bg-highlight z-10 bg-opacity-40"></div>
+                        <div
+                          className={`absolute w-1 h-[calc(100%+20px)] bg-highlight z-10 ${
+                            order.delivered === false && 'bg-opacity-40'
+                          }`}
+                        ></div>
                       </div>
                     </div>
 
@@ -221,16 +225,16 @@ const Dashboard = () => {
 
                         <div
                           className={`${
-                            index >= orderIndex
-                              ? 'text-yellow-500 bg-yellow-500'
-                              : 'text-green-500 bg-green-500 '
+                            order.delivered === true
+                              ? 'text-green-500 bg-green-500 '
+                              : 'text-yellow-500 bg-yellow-500'
                           } rounded-full bg-opacity-20 py-1 px-2 text-sm font-semibold`}
                         >
-                          {index === orderIndex
+                          {order.delivered === true
+                            ? 'Delivered'
+                            : data[index - 1].delivered === true
                             ? 'In Transit'
-                            : index > orderIndex
-                            ? 'Pending'
-                            : 'Delivered'}
+                            : 'Pending'}
                         </div>
                       </div>
                       <p className="text-text_primary opacity-60 font-poppins text-base font-semibold">
