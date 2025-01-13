@@ -15,7 +15,6 @@ const PackerNav = () => {
   let { vehicleId, cardboardId } = useParams()
   vehicleId = Number(vehicleId)
   cardboardId = Number(cardboardId)
-  console.log(vehicleId, cardboardId)
   const packingInformation = JSON.parse(
     localStorage.getItem('result')
   ).packing_information
@@ -37,9 +36,6 @@ const PackerNav = () => {
       icon: faBoxesPacking,
     },
   ]
-  console.log(vehicleList)
-  console.log(packingInformation)
-  console.log(indexOfVehicle)
 
   const handleSelectVehicle = (e) => {
     const selectedVehicleId = e.target.value
@@ -55,9 +51,7 @@ const PackerNav = () => {
         (detail) => detail.id === selectedVehicleId
       )
       const cardboardId = packingInformation[indexOfVehicle]?.[0]?.id
-      console.log(
-        `/packer/vehicle/${selectedVehicleId}/cardboard/${cardboardId}`
-      )
+
       window.location.href = `/packer/vehicle/${selectedVehicleId}/cardboard/${cardboardId}`
     }
   }

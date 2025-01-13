@@ -15,7 +15,6 @@ const AdminNavbar = ({ location }) => {
       const response = await axios.post(
         'http://localhost:5000/admin/generate/db'
       )
-      console.log(response)
     } catch (e) {
       console.error('Error rebuild DB: ', e)
     }
@@ -26,7 +25,6 @@ const AdminNavbar = ({ location }) => {
       const response = await axios.post(
         'http://localhost:3001/runGenerateOrders'
       )
-      console.log(response)
     } catch (e) {
       console.error('Error generate orders: ', e)
     }
@@ -36,7 +34,6 @@ const AdminNavbar = ({ location }) => {
       const response = await axios.post(
         'http://localhost:3001/runGenerateAvalVehicles'
       )
-      console.log(response)
     } catch (e) {
       console.error('Error fetching available vehicle list: ', e)
     }
@@ -46,7 +43,6 @@ const AdminNavbar = ({ location }) => {
       const response = await axios.post(
         'http://localhost:3001/runDeliverOrders'
       )
-      console.log(response)
     } catch (e) {
       console.error('Error fetching available vehicle list: ', e)
     }

@@ -17,7 +17,7 @@ const AdminNav = () => {
   let { id } = useParams()
   id = Number(id)
   const vehicleList = JSON.parse(localStorage.getItem('problem')).vehicle_list
-  console.log(vehicleList)
+
   const links = [
     {
       title: 'Dashboard',
@@ -33,7 +33,6 @@ const AdminNav = () => {
     },
   ]
   const vehicleNum = JSON.parse(localStorage.getItem('result')).num_vehicle
-  console.log(vehicleNum)
 
   const handleSelectVehicle = (e) => {
     const selectedValue = e.target.value

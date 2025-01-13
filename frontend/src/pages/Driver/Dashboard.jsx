@@ -8,23 +8,6 @@ import MapPlaceholder from './components/MapPlaceholder'
 
 const Dashboard = () => {
   const shipment = useOutletContext()
-  // const score = 49
-  // const maxScore = 50
-  // const segments = [15, 10, 10, 10, 5, 50]
-
-  // let tempScore = score
-  // const data = segments.map((limit, index) => {
-  //   if (index < 5) {
-  //     if (tempScore > limit) {
-  //       tempScore -= limit
-  //       return limit
-  //     } else {
-  //       return tempScore
-  //     }
-  //   } else {
-  //     return maxScore - score
-  //   }
-  // })
   let { id } = useParams()
   id = Number(id)
   const indexOfVehicle = JSON.parse(
@@ -45,8 +28,17 @@ const Dashboard = () => {
   const distanceMatrix = JSON.parse(
     localStorage.getItem('problem')
   ).distance_matrix
-  let orderIndexList = []
+
   let data = JSON.parse(localStorage.getItem('mappedData'))[indexOfVehicle]
+
+  let totalWeight = 0
+  data.map((order) => {
+    order.item_list.map((item) => {
+      totalWeight += item.weight
+    })
+  })
+  totalWeight = totalWeight / 1000
+  console.log(totalWeight)
 
   let origin, destination
   for (let i = 0; i < data.length; i++) {
@@ -76,7 +68,7 @@ const Dashboard = () => {
   }
 
   const rating = (Math.random() * (5 - 4) + 4).toFixed(2)
-  const orderIndex = 0
+
   const handleClickArrive = (index) => {
     let mappedData = JSON.parse(localStorage.getItem('mappedData'))
     mappedData[indexOfVehicle]?.[index] &&
@@ -85,6 +77,25 @@ const Dashboard = () => {
     localStorage.setItem('mappedData', JSON.stringify(mappedData))
     window.location.reload()
   }
+
+  let distanceList = []
+  let orderIndexList = []
+
+  data.map((order, index) => {
+    const orderIndex = orderList.findIndex((orderA) => orderA.id === order.id)
+    orderIndexList.push(orderIndex)
+    distanceList.push(
+      index === 0
+        ? distanceMatrix[0][orderIndex + 1]
+        : distanceMatrix[orderIndexList[index - 1] + 1][
+            orderIndexList[index] + 1
+          ]
+    )
+  })
+  const totalDistance = distanceList.reduce(
+    (total, distance) => total + distance,
+    0
+  )
   return (
     <div className="h-full min-h-[100vh] w-full flex flex-row">
       <div className="p-[10px] px-10 w-[40%] max-h-full h-screen overflow-y-scroll">
@@ -142,7 +153,9 @@ const Dashboard = () => {
                 </h5>
                 <p className="font-poppins text-text_primary text-sm font-semibold">
                   {/* need update */}
-                  .../{vehicleDetails.box_max_weight.toFixed(2)} kg, ... km
+                  {totalWeight.toFixed(2)}/
+                  {vehicleDetails.box_max_weight.toFixed(2)} kg,{' '}
+                  {totalDistance.toFixed(2)} km
                 </p>
               </div>
             </div>
@@ -172,18 +185,19 @@ const Dashboard = () => {
                 </div>
               </div>
               {data.map((order, index) => {
-                const orderIndex = orderList.findIndex(
-                  (orderA) => orderA.id === order.id
-                )
-                console.log(index, orderIndex)
-                orderIndexList.push(orderIndex)
+                // const orderIndex = orderList.findIndex(
+                //   (orderA) => orderA.id === order.id
+                // )
 
-                const distance =
-                  index === 0
-                    ? distanceMatrix[0][orderIndex + 1]
-                    : distanceMatrix[orderIndexList[index - 1] + 1][
-                        orderIndexList[index] + 1
-                      ]
+                // orderIndexList.push(orderIndex)
+
+                // const distance =
+                //   index === 0
+                //     ? distanceMatrix[0][orderIndex + 1]
+                //     : distanceMatrix[orderIndexList[index - 1] + 1][
+                //         orderIndexList[index] + 1
+                //       ]
+                const distance = distanceList[index]
 
                 let showButton = false
                 if (index === 0 && order.delivered === false) {
@@ -208,11 +222,13 @@ const Dashboard = () => {
                           ({distance.toFixed(2)} km)
                         </span>
                       </p>
-                      <div className="w-4 h-4 bg-highlight rounded-full flex justify-center">
+                      <div
+                        className={`w-4 h-4 bg-highlight rounded-full flex justify-center `}
+                      >
                         <div
                           className={`absolute w-1 h-[calc(100%+20px)] bg-highlight z-10 ${
                             order.delivered === false && 'bg-opacity-40'
-                          }`}
+                          } ${index === data.length - 1 && 'hidden'}`}
                         ></div>
                       </div>
                     </div>
@@ -276,7 +292,7 @@ const Dashboard = () => {
                 )
               })}
 
-              <div className="w-full flex flex-row items-stretch mb-4">
+              {/* <div className="w-full flex flex-row items-stretch mb-4">
                 <div className="flex flex-row mr-4 pt-2 w-[80px] justify-between relative">
                   <p className="text-text_primary text-xs opacity-60 font-semibold">
                     <span className="block">
@@ -303,7 +319,7 @@ const Dashboard = () => {
                     {shipment.warehouseEnd}
                   </p>
                 </div>
-              </div>
+              </div> */}
             </div>
           </>
         )}
