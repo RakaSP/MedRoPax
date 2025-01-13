@@ -120,7 +120,7 @@ const Vehicle = () => {
       )
 
       localStorage.setItem('problem', JSON.stringify(response.data.problem))
-      alert('Problem generated successfully')
+      alert('Problem generated successfully, check your download folder.')
     } catch (error) {
       console.error('Error generating problem:', error)
     }

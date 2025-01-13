@@ -31,60 +31,70 @@ Such a file is kept in the JSON format, with an example can be seen below:
 
 ```json
 {
-  "max_duration": 480,
-  "product_types": [
+  "product_type": [
     {
       "id": 1,
-      "weight": 15,
-      "length": 2,
-      "width": 1,
-      "height": 3,
+      "weight": 7.0,
+      "size": [7, 8, 7],
       "need_refrigeration": true,
-      "is_fragile": true
+      "is_fragile": true,
+      "name": "NeostatinRX"
     },
     {
       "id": 2,
-      "weight": 10,
-      "length": 2,
-      "width": 1,
-      "height": 3,
-      "need_refrigeration": true,
-      "is_fragile": false
+      "weight": 8.3,
+      "size": [9, 2, 6],
+      "need_refrigeration": false,
+      "is_fragile": true,
+      "name": "NeololPlus"
     }
   ],
-  "vehicles": [
+  "vehicle_list": [
     {
-      "id": 1,
-      "length": 10,
-      "width": 10,
-      "height": 10,
-      "max_weight": 1000,
+      "box_size": [100, 200, 150],
+      "box_max_weight": 1552.4,
+      "cost_per_km": 41.0,
+      "cost_per_kg": 16.5,
       "is_reefer": false,
-      "fixed_cost": 100,
-      "variable_cost": 2
-    },
-    {
-      "id": 2,
-      "length": 10,
-      "width": 10,
-      "height": 10,
-      "max_weight": 2000,
-      "is_reefer": true,
-      "fixed_cost": 200,
-      "variable_cost": 4
+      "max_duration": 18000.0,
+      "vehicle_type": "TrailZXL",
+      "id": 9
     }
   ],
-  "customers": [
-    { "id": 1, "ordered_product_types": [1, 2, 2] },
-    { "id": 2, "ordered_product_types": [1, 2] }
+  "order_list": [
+    {
+      "id": 91,
+      "customer_name": "Dr.SarahHernandez",
+      "item_list": [1, 2],
+      "coord": [-6.207028554720083, 106.74036744279707]
+    },
+    {
+      "id": 92,
+      "customer_name": "Mr.JohnGarcia",
+      "item_list": [1, 2],
+      "coord": [-6.1372736573418205, 106.81272271538616]
+    }
   ],
+  "cardboard_list": [
+    {
+      "id": 14,
+      "size": [75, 75, 75],
+      "max_weight": 5.910747523943906,
+      "name": "HardSmallA1"
+    },
+    {
+      "id": 15,
+      "size": [65, 65, 65],
+      "max_weight": 9.119285297287258,
+      "name": "CorrMediumA1"
+    }
+  ],
+  "depot_coord": [-6.2463610202328, 106.8794224671884],
+  "max_duration": 18000.0,
   "distance_matrix": [
-    { "origin_node_id": 0, "destination_node_id": 1, "distance": 100 },
-    { "origin_node_id": 0, "destination_node_id": 2, "distance": 50 },
-    { "origin_node_id": 1, "destination_node_id": 0, "distance": 150 },
-    { "origin_node_id": 1, "destination_node_id": 2, "distance": 40 },
-    { "origin_node_id": 2, "destination_node_id": 0, "distance": 80 },
-    { "origin_node_id": 2, "destination_node_id": 1, "distance": 160 }
+    [0.0, 15.98110073658355, 14.195178370740718],
+    [15.98110073658355, 0.0, 11.141993589657769],
+    [14.195178370740718, 11.141993589657769, 0.0]
   ]
 }
 ```
@@ -95,6 +105,11 @@ In the solver account page, users can upload a problem instance file that the us
 <img src="img/upload-solve-button.jpg" alt="Description" width="850" height="300">
 </div>
 
+<br/>If you do not have a problem case yet, you can generate a problem case using the "Click here to generate a problem" button. It will generate a problem instance and put it in your Downloads folder for Windows.
+
+<div style="text-align: center;">
+<img src="img/generate-problem.png" alt="Description" width="850" height="500">
+</div>
 ## Admin Account
 
 The admin account page gives a high level overview of the solution data based on the solved problem instance, which consist of
