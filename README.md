@@ -108,8 +108,9 @@ In the solver account page, users can upload a problem instance file that the us
 <br/>If you do not have a problem case yet, you can generate a problem case using the "Click here to generate a problem" button. It will generate a problem instance and put it in your Downloads folder for Windows.
 
 <div style="text-align: center;">
-<img src="img/generate-problem.png" alt="Description" width="850" height="500">
+<img src="img/generate-problem.png" alt="Description" width="750" height="500">
 </div>
+
 ## Admin Account
 
 The admin account page gives a high level overview of the solution data based on the solved problem instance, which consist of
