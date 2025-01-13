@@ -59,7 +59,7 @@ const AdminNav = () => {
   ]
   return (
     <>
-      <nav className="mt-3">
+      <nav className="mt-3 h-full px-[30px]">
         {links.map((item, index) => (
           <React.Fragment key={item.title}>
             <NavLink

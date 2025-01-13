@@ -7,12 +7,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleRight, faAngleDown } from '@fortawesome/free-solid-svg-icons'
 
 const Login = () => {
-  const [username, setUsername] = useState('admin')
-  const [password, setPassword] = useState('admin')
+  const [username, setUsername] = useState('driver')
+  const [password, setPassword] = useState('driver')
   const [userSelect, setUserSelect] = useState(false)
   const navigate = useNavigate()
   const users = [
-    { username: 'admin', password: 'admin' },
+    // { username: 'admin', password: 'admin' },
     { username: 'driver', password: 'driver' },
     { username: 'packer', password: 'packer' },
     { username: 'solver', password: 'solver' },
@@ -35,7 +35,7 @@ const Login = () => {
     if (username === 'solver' && password === 'solver') navigate('/solver')
 
     if (needLoad && (username !== 'solver' || password !== 'solver')) {
-      alert('Please load the necessary data first.')
+      alert('Please load the necessary data in solver page first.')
       return
     }
 
