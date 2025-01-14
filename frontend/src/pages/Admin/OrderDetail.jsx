@@ -15,29 +15,32 @@ import {
   faPhone,
 } from '@fortawesome/free-solid-svg-icons'
 
-import { orders } from '../../constants'
 const OrderDetail = () => {
   let { id } = useParams()
-  const numericId = parseInt(id, 10)
-  let order = orders.find((order) => order.id === numericId)
+  id = Number(id)
+
+  let orders = JSON.parse(localStorage.getItem('mappedData'))
+  orders = orders.flatMap((packingInfo) => packingInfo)
+
+  let order = orders.find((order) => order.id === id)
   let totalPrice = 0
   return (
     <div className="py-[10px] px-10">
       <h4 className={`${styles.heading4} mt-7 text-text_primary`}>
         Order ID #{order.id}
-        <NavLink
+        {/* <NavLink
           to={`/admin/shipment/1`}
           className="ml-4 text-text_primary !text-[16px] cursor-pointer hover:text-highlight"
         >
-          (Shipment #1)
-        </NavLink>
+          (Vehicle #1)
+        </NavLink> */}
       </h4>
       <div className="flex-col flex justify-between mt-7 py-6 px-10 bg-bg_card rounded-lg shadow-lg">
         <div className="flex flex-col text-text_primary font-poppins">
           <p className="text-sm font-semibold mb-1">
             <span className="w-12 inline-block">ETA</span>
             {': '}
-            <span>{order.ETA}</span>
+            <span>{order.arrivalTime}</span>
           </p>
           <p className="text-sm font-semibold mb-1">
             <span className="w-12 inline-block">USPS</span>
@@ -52,7 +55,7 @@ const OrderDetail = () => {
               <li className="active step0"></li>
               <li className="active step0"></li>
               <li className="active step0"></li>
-              <li className="step0"></li>
+              <li className={`${order.delivered && 'active'} step0`}></li>
             </ul>
           </div>
         </div>
@@ -92,8 +95,15 @@ const OrderDetail = () => {
       <div className="flex flex-row mx-auto mt-8 justify-between">
         <div className="bg-bg_card shadow-md rounded-lg flex-1 mr-10 py-[20px] px-[40px] font-poppins max-h-[50vh] overflow-y-scroll">
           <h4 className={`${styles.heading42}`}>Item List</h4>
-          {order.items.map((item) => {
-            const subTotal = item.price * item.qty
+          {order.item_list.map((item) => {
+            const price =
+              Math.floor(Math.random() * (150000 - 10000 + 1)) + 10000
+
+            const qty = Math.floor(Math.random() * (15 - 1 + 1)) + 1
+
+            // Calculate subtotal
+            const subTotal = price * qty
+
             totalPrice += subTotal
             return (
               <React.Fragment key={item}>
@@ -102,7 +112,7 @@ const OrderDetail = () => {
                   <div className="flex flex-row w-[30%] justify-between">
                     <div>
                       <p>
-                        {item.qty} x <span>{item.price} (IDR)</span>
+                        {qty} x <span>{price} (IDR)</span>
                       </p>
                     </div>
                     <div>{subTotal} (IDR)</div>
@@ -134,22 +144,20 @@ const OrderDetail = () => {
             <hr className="border-highlight border-[1px] mb-2" />
             <div className="my-2 truncate">
               <FontAwesomeIcon icon={faUser} />
-              <span>Lenore Hinrich</span>
+              <span>{order.customer_name}</span>
             </div>
-            <div className="my-2 truncate">
+            {/* <div className="my-2 truncate">
               <FontAwesomeIcon icon={faEnvelope} />
               <span>LenoreHinrich@gmail.com</span>
             </div>
             <div className="my-2 truncate">
               <FontAwesomeIcon icon={faPhone} />
               <span>+62 712 805 0876</span>
-            </div>
+            </div> */}
             <div className="my-2 truncate">
               <FontAwesomeIcon icon={faLocationArrow} />
               <span>
-                Jujur Agung Rejeki. PT, JL. Gajah Mada 22, Yogyakarta, 55112,
-                Purwokinanti, Pakualaman, Yogyakarta City, Special Region of
-                Yogyakarta 55151
+                X:{order.coord[0].toFixed(2)} Y:{order.coord[1].toFixed(2)}
               </span>
             </div>
           </div>

@@ -34,22 +34,22 @@ function App() {
         <Route path="/" element={<LoginPage />}></Route>
         <Route path="/" element={<EmployeeLayout />}>
           <Route path="/admin" element={<Admin />}>
-            <Route path="" element={<AdminDashboard />} />
+            {/* <Route path="" element={<AdminDashboard />} />
             <Route path="employees" element={<EmployeeList />}>
               <Route path="list" element={<EmployeeList />} />
               <Route path="add" element={<AddEmployee />} />
-            </Route>
+            </Route> */}
             <Route path="vehicles" element={<Vehicles />} />
             <Route path="shipment" element={<ShipmentList />} />
-            <Route path="shipment/:id" element={<ShipmentDetail />} />
+            {/* <Route path="shipment/:id" element={<ShipmentDetail />} /> */}
             <Route path="order" element={<OrderList />} />
             <Route path="order/:id" element={<OrderDetail />} />
-            <Route path="trouble" element={<Troubles />}></Route>
+            {/* <Route path="trouble" element={<Troubles />}></Route> */}
           </Route>
           <Route path="/driver" element={<Driver />}>
             <Route path=":id" element={<DriverDashboard />}></Route>
-            <Route path="report" element={<DriverReport />}></Route>
-            <Route path="profile" element={<DriverProfile />}></Route>
+            {/* <Route path="report" element={<DriverReport />}></Route>
+            <Route path="profile" element={<DriverProfile />}></Route> */}
           </Route>
           <Route path="packer" element={<Packer />}>
             <Route path="vehicle/:vehicleId" element={<PackerVehicle />} />

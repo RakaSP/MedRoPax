@@ -216,4 +216,4 @@ ing constraints, IEEE Computational Intelligence Magazine 9 (4) (2014)
 
 # Under Maintenance
 
-The packing guide PDF generation and admin pages are currently under maintenance and rehaul, and hence are deactivated
+The packing guide PDF generation are currently under maintenance and rehaul, and hence are deactivated

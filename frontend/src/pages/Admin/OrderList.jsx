@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { orders } from '../../constants'
+// import { orders } from '../../constants'
 import { NavLink } from 'react-router-dom'
 import styles from '../../styles/style'
 
@@ -12,6 +12,10 @@ const formatDateTime = (dateString) => {
   })
   return `${formattedDate} ${formattedTime}`
 }
+
+let orders = JSON.parse(localStorage.getItem('mappedData'))
+
+orders = orders.flatMap((packingInfo) => packingInfo)
 
 const formatCurrency = (amount) => {
   return new Intl.NumberFormat('id-ID', {
@@ -67,9 +71,8 @@ const OrderList = () => {
             <tr>
               <th className="py-2 px-4 text-left">ID</th>
               <th className="py-2 px-4 text-left">Customer Name</th>
-              <th className="py-2 px-4 text-left">Order Date</th>
               <th className="py-2 px-4 text-left">ETA</th>
-              <th className="py-2 px-4 text-left">Total Price</th>
+              <th className="py-2 px-4 text-left">Coord</th>
               <th className="py-2 px-4 text-center">Status</th>
             </tr>
           </thead>
@@ -88,36 +91,31 @@ const OrderList = () => {
                     {order.id}
                   </NavLink>
                 </td>
-                <td className="py-2 px-4">{order.customer.name}</td>
-                <td className="py-2 px-4">{formatDateTime(order.date)}</td>
+                <td className="py-2 px-4">{order.customer_name}</td>
+                <td className="py-2 px-4">{order.arrivalTime}</td>
                 <td className="py-2 px-4">
-                  {new Date(order.ETA).toLocaleDateString('en-GB')}
+                  X:{order.coord[0].toFixed(2)} Y:{order.coord[1].toFixed(2)}
                 </td>
-                <td className="py-2 px-4">
+                {/* <td className="py-2 px-4">
+                  {new Date(order.ETA).toLocaleDateString('en-GB')}
+                </td> */}
+                {/* <td className="py-2 px-4">
                   {formatCurrency(
                     order.items.reduce(
                       (acc, item) => acc + parseInt(item.price),
                       0
                     )
                   )}
-                </td>
+                </td> */}
                 <td className="py-2 px-4 text-center">
                   <span
                     className={`${
-                      order.status === 'Scheduled'
-                        ? 'bg-slate-500 text-slate-500'
-                        : order.status === 'Ready'
-                        ? 'bg-blue-500 text-blue-500'
-                        : order.status === 'In Transit'
-                        ? 'bg-yellow-500 text-yellow-500'
-                        : order.status === 'Delayed'
-                        ? 'bg-orange-500 text-orange-500'
-                        : order.status === 'Delivered'
+                      order.delivered
                         ? 'bg-green-500 text-green-500'
-                        : 'bg-red-500 text-red-500'
+                        : 'bg-orange-500 text-orange-500'
                     } bg-opacity-20 py-1 px-2 rounded-md`}
                   >
-                    {order.status}
+                    {order.delivered ? 'Delivered' : 'Undelivered'}
                   </span>
                 </td>
               </tr>

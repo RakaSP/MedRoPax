@@ -7,12 +7,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleRight, faAngleDown } from '@fortawesome/free-solid-svg-icons'
 
 const Login = () => {
-  const [username, setUsername] = useState('driver')
-  const [password, setPassword] = useState('driver')
+  const [username, setUsername] = useState('admin')
+  const [password, setPassword] = useState('admin')
   const [userSelect, setUserSelect] = useState(false)
   const navigate = useNavigate()
   const users = [
-    // { username: 'admin', password: 'admin' },
+    { username: 'admin', password: 'admin' },
     { username: 'driver', password: 'driver' },
     { username: 'packer', password: 'packer' },
     { username: 'solver', password: 'solver' },
@@ -39,7 +39,8 @@ const Login = () => {
       return
     }
 
-    if (username === 'admin' && password === 'admin') navigate('/admin')
+    if (username === 'admin' && password === 'admin')
+      navigate('/admin/vehicles')
     else if (username === 'driver' && password === 'driver')
       navigate(`/driver/${defId}`)
     else if (username === 'packer' && password === 'packer')
