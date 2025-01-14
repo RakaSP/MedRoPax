@@ -20,7 +20,7 @@ const Dashboard = () => {
     JSON.parse(localStorage.getItem('result'))?.tour_list?.[indexOfVehicle]
       .length > 0
   )
-        
+
   const vehicleDetails = JSON.parse(localStorage.getItem('problem'))
     .vehicle_list[indexOfVehicle]
   const depotCoord = JSON.parse(localStorage.getItem('problem')).depot_coord
@@ -52,7 +52,24 @@ const Dashboard = () => {
       break
     }
   }
+  let distanceList = []
+  let orderIndexList = []
 
+  data.map((order, index) => {
+    const orderIndex = orderList.findIndex((orderA) => orderA.id === order.id)
+    orderIndexList.push(orderIndex)
+    distanceList.push(
+      index === 0
+        ? distanceMatrix[0][orderIndex + 1]
+        : distanceMatrix[orderIndexList[index - 1] + 1][
+            orderIndexList[index] + 1
+          ]
+    )
+  })
+  const totalDistance = distanceList.reduce(
+    (total, distance) => total + distance,
+    0
+  )
   const driverMileage = Math.floor(Math.random() * (10000 - 5000 + 1)) + 5000
 
   function generateRandomPlate() {
@@ -78,24 +95,6 @@ const Dashboard = () => {
     window.location.reload()
   }
 
-  let distanceList = []
-  let orderIndexList = []
-
-  data.map((order, index) => {
-    const orderIndex = orderList.findIndex((orderA) => orderA.id === order.id)
-    orderIndexList.push(orderIndex)
-    distanceList.push(
-      index === 0
-        ? distanceMatrix[0][orderIndex + 1]
-        : distanceMatrix[orderIndexList[index - 1] + 1][
-            orderIndexList[index] + 1
-          ]
-    )
-  })
-  const totalDistance = distanceList.reduce(
-    (total, distance) => total + distance,
-    0
-  )
   return (
     <div className="h-full min-h-[100vh] w-full flex flex-row">
       <div className="p-[10px] px-10 w-[40%] max-h-full h-screen overflow-y-scroll">

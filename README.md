@@ -201,7 +201,7 @@ and time.
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-# References todo
+# References
 
 <a id="1">[1]</a>
 C. Krebs, J. F. Ehmke, H. Koch, Advanced loading constraints for 3d

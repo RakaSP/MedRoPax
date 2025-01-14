@@ -27,17 +27,54 @@ const ShipmentList = () => {
   const rowsPerPage = 15
   const packingInformation = JSON.parse(localStorage.getItem('mappedData'))
   const vehicleList = JSON.parse(localStorage.getItem('problem')).vehicle_list
+  const distanceMatrix = JSON.parse(
+    localStorage.getItem('problem')
+  ).distance_matrix
+  const orderList = JSON.parse(localStorage.getItem('problem')).order_list
   const shipments = packingInformation
     .map((detail, index) => {
       const vehicleID = vehicleList[index].id
+
+      const ETA =
+        detail.length > 0 ? detail[detail.length - 1].arrivalTime : null
+
+      let totalWeigth = 0
+      console.log(detail)
+      detail.map((order) => {
+        order.item_list.map((item) => {
+          totalWeigth += item.weight
+        })
+      })
+      let distanceList = []
+      let orderIndexList = []
+      detail.map((order, index) => {
+        const orderIndex = orderList.findIndex(
+          (orderA) => orderA.id === order.id
+        )
+        orderIndexList.push(orderIndex)
+        distanceList.push(
+          index === 0
+            ? distanceMatrix[0][orderIndex + 1]
+            : distanceMatrix[orderIndexList[index - 1] + 1][
+                orderIndexList[index] + 1
+              ]
+        )
+      })
+      const totalDistance = distanceList.reduce(
+        (total, distance) => total + distance,
+        0
+      )
       return {
         id: vehicleID,
-        packingInformation: detail,
+        departure: '09:00',
+        ETA: ETA,
+        total_weight: totalWeigth,
+        total_distance: totalDistance,
+        packing_information: detail,
       }
     })
-    .filter((shipment) => shipment.packingInformation.length > 0)
+    .filter((shipment) => shipment.packing_information.length > 0)
 
-  console.log(shipments)
   const indexOfLastRow = currentPage * rowsPerPage
   const indexOfFirstRow = indexOfLastRow - rowsPerPage
   const currentShipments = shipments.slice(indexOfFirstRow, indexOfLastRow)
@@ -81,10 +118,8 @@ const ShipmentList = () => {
               <th className="py-2 px-4 text-left">Vehicle ID</th>
               <th className="py-2 px-4 text-left">Departure</th>
               <th className="py-2 px-4 text-left">ETA</th>
-              <th className="py-2 px-4 text-left">Total Price</th>
               <th className="py-2 px-4 text-left">Total Weight</th>
               <th className="py-2 px-4 text-left">Total Distance</th>
-              <th className="py-2 px-4 text-center">Status</th>
             </tr>
           </thead>
           <tbody>
@@ -94,23 +129,30 @@ const ShipmentList = () => {
                 className="border-b border-gray-200 text-base font-medium"
               >
                 <td className="py-2 px-4">
-                  <NavLink
+                  {/* <NavLink
                     className="underline cursor-pointer hover:text-highlight"
                     to={`${shipment.id}`}
                   >
                     {shipment.id}
-                  </NavLink>
+                  </NavLink> */}
+                  {shipment.id}
                 </td>
-                <td className="py-2 px-4">
+                {/* <td className="py-2 px-4">
                   {formatDateTime(shipment.departureDate)}
                 </td>
                 <td className="py-2 px-4">{formatDateTime(shipment.ETA)}</td>
                 <td className="py-2 px-4">
                   {formatCurrency(shipment.totalPrice)}
+                </td> */}
+                <td className="py-2 px-4">{shipment.departure}</td>
+                <td className="py-2 px-4">{shipment.ETA}</td>
+                <td className="py-2 px-4">
+                  {shipment.total_weight.toFixed(2)} KG
                 </td>
-                <td className="py-2 px-4">{shipment.totalWeight} KG</td>
-                <td className="py-2 px-4">{shipment.totalDistance} KM</td>
-                <td className="py-2 px-4 text-center">
+                <td className="py-2 px-4">
+                  {shipment.total_distance.toFixed(2)} KM
+                </td>
+                {/* <td className="py-2 px-4 text-center">
                   <span
                     className={`${
                       shipment.status === 'Scheduled'
@@ -128,7 +170,7 @@ const ShipmentList = () => {
                   >
                     {shipment.status}
                   </span>
-                </td>
+                </td> */}
               </tr>
             ))}
           </tbody>
