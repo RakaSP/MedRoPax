@@ -1,14 +1,61 @@
 import React, { useState, useEffect } from 'react'
-import { vehicles } from '../../constants'
 import styles from '../../styles/style'
 import '../../styles/index.scss'
 import { icecube } from '../../assets/EmployeePage'
+import { truck2d } from '../../assets/EmployeePage'
 const Vehicles = () => {
   const [activeStatus, setActiveStatus] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
   const [filteredVehiclesData, setFilteredVehiclesData] = useState([])
   const [searchValue, setSearchValue] = useState('')
   const itemsPerPage = 16
+  let vehicles =
+    JSON.parse(localStorage.getItem('problem')).vehicle_list || null
+  const packingInformation = JSON.parse(localStorage.getItem('mappedData'))
+  const orderList = JSON.parse(localStorage.getItem('problem')).order_list
+  const distanceMatrix = JSON.parse(
+    localStorage.getItem('problem')
+  ).distance_matrix
+
+  vehicles = vehicles.map((vehicle, index) => {
+    const length = packingInformation[index].length
+    if (
+      length === 0
+      // || packingInformation[index]?.[length - 1].delivered === true
+    ) {
+      vehicle.status = 'available'
+    } else {
+      vehicle.status = 'in transit'
+    }
+
+    let totalWeight = 0
+    packingInformation[index].map((order) => {
+      order.item_list.map((item) => {
+        totalWeight += item.weight
+      })
+    })
+
+    vehicle.total_weight = totalWeight / 1000
+    // let distanceList = []
+    // let orderIndexList = []
+    // packingInformation[index].map((order, index) => {
+    //   const orderIndex = orderList.findIndex((orderA) => orderA.id === order.id)
+    //   orderIndexList.push(orderIndex)
+    //   distanceList.push(
+    //     index === 0
+    //       ? distanceMatrix[0][orderIndex + 1]
+    //       : distanceMatrix[orderIndexList[index - 1] + 1][
+    //           orderIndexList[index] + 1
+    //         ]
+    //   )
+    // })
+    // const totalDistance = distanceList.reduce(
+    //   (total, distance) => total + distance,
+    //   0
+    // )
+    // vehicle.total_distance = totalDistance
+    return vehicle
+  })
 
   const handleListClick = (index) => {
     setActiveStatus(index)
@@ -37,9 +84,9 @@ const Vehicles = () => {
     } else {
       const statusMapping = {
         1: 'available',
-        2: 'ready',
-        3: 'in transit',
-        4: 'maintenance',
+        // 2: 'ready',
+        2: 'in transit',
+        // 4: 'maintenance',
       }
       const filteredData = vehicles.filter(
         (item) =>
@@ -56,16 +103,15 @@ const Vehicles = () => {
     const currentVehicles = filteredVehiclesData.slice(startIndex, endIndex)
 
     return (
-      <div className="grid justify-start mb-4 gap-4 grid-cols-2 ">
+      <div className="grid justify-start mb-4 gap-4 grid-cols-4 ">
         {currentVehicles.map((vehicle) => (
           <div
-            className="flex-1 relative py-4 px-3 rounded-md border-2 border-gray-200 shadow-md bg-bg_card text-3xl"
+            className="relative py-4 px-3 rounded-md border-2 border-gray-200 shadow-md bg-bg_card text-lg"
             key={vehicle.id}
           >
             <div className="flex flex-row justify-between mb-1 font-poppins">
               <div className="font-[500]">
-                Vehicle
-                <span className="font-semibold"> #{vehicle.id}</span>
+                <span className="font-semibold"> {vehicle.id}</span>
               </div>
               <div className=" font-semibold text-[green]">
                 {vehicle.status}
@@ -73,14 +119,15 @@ const Vehicles = () => {
             </div>
             <div className="flex flex-row justify-between">
               <div className="basis-2/5 flex flex-col">
-                <div>
+                {/* <div>
                   <div className="text-text_primary text-sm">Shipment ID</div>
                   <div className="font-semibold">{vehicle.shipmentID}</div>
-                </div>
+                </div> */}
                 <div>
                   <div className="text-text_primary text-sm">Weight (KG)</div>
                   <div className="font-semibold">
-                    {vehicle.weight}/{vehicle.maxWeight}
+                    {vehicle.total_weight.toFixed(2)}/
+                    {vehicle.box_max_weight.toFixed(2)}
                   </div>
                 </div>
                 {/* <div>
@@ -91,11 +138,7 @@ const Vehicles = () => {
                 </div> */}
               </div>
               <div className="basis-3/5 flex items-center justify-center relative">
-                <img
-                  src={vehicle.imgUrl}
-                  alt={vehicle.imgUrl}
-                  className="object-fit"
-                />
+                <img src={truck2d} alt="img" className="object-fit" />
                 {vehicle.refrigerated && (
                   <img
                     src={icecube}
@@ -124,9 +167,9 @@ const Vehicles = () => {
             {[
               { id: 0, status: 'All Vehicles' },
               { id: 1, status: 'Available' },
-              { id: 2, status: 'Ready' },
+              // { id: 2, status: 'Ready' },
               { id: 3, status: 'In Transit' },
-              { id: 4, status: 'Maintenance' },
+              // { id: 4, status: 'Maintenance' },
             ].map((item, index) => (
               <div
                 key={index}

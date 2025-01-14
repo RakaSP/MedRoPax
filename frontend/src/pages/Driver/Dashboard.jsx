@@ -20,7 +20,7 @@ const Dashboard = () => {
     JSON.parse(localStorage.getItem('result'))?.tour_list?.[indexOfVehicle]
       .length > 0
   )
-
+        
   const vehicleDetails = JSON.parse(localStorage.getItem('problem'))
     .vehicle_list[indexOfVehicle]
   const depotCoord = JSON.parse(localStorage.getItem('problem')).depot_coord

@@ -10,61 +10,61 @@ import {
 import axios from 'axios'
 
 const AdminNavbar = ({ location }) => {
-  const rebuildDB = async () => {
-    try {
-      const response = await axios.post(
-        'http://localhost:5000/admin/generate/db'
-      )
-    } catch (e) {
-      console.error('Error rebuild DB: ', e)
-    }
-  }
+  // const rebuildDB = async () => {
+  //   try {
+  //     const response = await axios.post(
+  //       'http://localhost:5000/admin/generate/db'
+  //     )
+  //   } catch (e) {
+  //     console.error('Error rebuild DB: ', e)
+  //   }
+  // }
 
-  const generateOrders = async () => {
-    try {
-      const response = await axios.post(
-        'http://localhost:3001/runGenerateOrders'
-      )
-    } catch (e) {
-      console.error('Error generate orders: ', e)
-    }
-  }
-  const generateVehicles = async () => {
-    try {
-      const response = await axios.post(
-        'http://localhost:3001/runGenerateAvalVehicles'
-      )
-    } catch (e) {
-      console.error('Error fetching available vehicle list: ', e)
-    }
-  }
-  const deliverOrders = async () => {
-    try {
-      const response = await axios.post(
-        'http://localhost:3001/runDeliverOrders'
-      )
-    } catch (e) {
-      console.error('Error fetching available vehicle list: ', e)
-    }
-  }
-  const navText = [
-    {
-      title: 'Rebuild Database',
-      trigger: rebuildDB,
-    },
-    {
-      title: 'Generate Orders',
-      trigger: generateOrders,
-    },
-    {
-      title: 'Generate Vehicles',
-      trigger: generateVehicles,
-    },
-    {
-      title: 'Delivery Orders',
-      trigger: deliverOrders,
-    },
-  ]
+  // const generateOrders = async () => {
+  //   try {
+  //     const response = await axios.post(
+  //       'http://localhost:3001/runGenerateOrders'
+  //     )
+  //   } catch (e) {
+  //     console.error('Error generate orders: ', e)
+  //   }
+  // }
+  // const generateVehicles = async () => {
+  //   try {
+  //     const response = await axios.post(
+  //       'http://localhost:3001/runGenerateAvalVehicles'
+  //     )
+  //   } catch (e) {
+  //     console.error('Error fetching available vehicle list: ', e)
+  //   }
+  // }
+  // const deliverOrders = async () => {
+  //   try {
+  //     const response = await axios.post(
+  //       'http://localhost:3001/runDeliverOrders'
+  //     )
+  //   } catch (e) {
+  //     console.error('Error fetching available vehicle list: ', e)
+  //   }
+  // }
+  // const navText = [
+  //   {
+  //     title: 'Rebuild Database',
+  //     trigger: rebuildDB,
+  //   },
+  //   {
+  //     title: 'Generate Orders',
+  //     trigger: generateOrders,
+  //   },
+  //   {
+  //     title: 'Generate Vehicles',
+  //     trigger: generateVehicles,
+  //   },
+  //   {
+  //     title: 'Delivery Orders',
+  //     trigger: deliverOrders,
+  //   },
+  // ]
 
   let searchPlaceholder = 'Search Driver or Order ID'
   let disableSearch = false
@@ -109,7 +109,8 @@ const AdminNavbar = ({ location }) => {
   return (
     <div className="min-h-[80px] flex items-center w-full bg-[#FFFFFF] shadow-md">
       <div className="flex justify-between items-center w-full px-10">
-        <div className="flex flex-row items-center justify-between">
+        <div></div>
+        {/* <div className="flex flex-row items-center justify-between">
           {navText.map((item, index) => (
             <div
               key={index}
@@ -121,7 +122,7 @@ const AdminNavbar = ({ location }) => {
               {item.title}
             </div>
           ))}
-        </div>
+        </div> */}
         <div className="flex flex-row items-center">
           {!disableSearch ? (
             <form className="p-3" onSubmit={handleSubmit}>

@@ -25,14 +25,7 @@ const AdminNav = () => {
       icon: faHouse,
       subLinks: [],
     },
-    {
-      title: 'Report',
-      link: '/driver/report',
-      icon: faBoxesPacking,
-      subLinks: [],
-    },
   ]
-  const vehicleNum = JSON.parse(localStorage.getItem('result')).num_vehicle
 
   const handleSelectVehicle = (e) => {
     const selectedValue = e.target.value

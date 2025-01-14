@@ -118,7 +118,6 @@ The admin account page gives a high level overview of the solution data based on
 - The list of vehicles, along with their capacity, refrigeration capabilities, usage, etc.
 - The list of shipments, along with their cost, weight, distance, delivery times, etc.
 - The list of orders, along with their price, customer location, delivery times, etc.
-- The list of reported delivery troubles by drivers.
 
 ## Packer Account
 

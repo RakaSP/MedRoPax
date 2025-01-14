@@ -25,12 +25,24 @@ const formatCurrency = (amount) => {
 const ShipmentList = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const rowsPerPage = 15
+  const packingInformation = JSON.parse(localStorage.getItem('mappedData'))
+  const vehicleList = JSON.parse(localStorage.getItem('problem')).vehicle_list
+  const shipments = packingInformation
+    .map((detail, index) => {
+      const vehicleID = vehicleList[index].id
+      return {
+        id: vehicleID,
+        packingInformation: detail,
+      }
+    })
+    .filter((shipment) => shipment.packingInformation.length > 0)
 
+  console.log(shipments)
   const indexOfLastRow = currentPage * rowsPerPage
   const indexOfFirstRow = indexOfLastRow - rowsPerPage
-  const currentShipments = shipments2.slice(indexOfFirstRow, indexOfLastRow)
+  const currentShipments = shipments.slice(indexOfFirstRow, indexOfLastRow)
 
-  const totalPages = Math.ceil(shipments2.length / rowsPerPage)
+  const totalPages = Math.ceil(shipments.length / rowsPerPage)
 
   const handleClick = (event) => {
     setCurrentPage(Number(event.target.id))
@@ -66,7 +78,7 @@ const ShipmentList = () => {
         <table className="min-w-full border border-gray-200 rounded-lg shadow-md text-text_primary ">
           <thead className="bg-gray-100 border-b border-gray-200 text-lg">
             <tr>
-              <th className="py-2 px-4 text-left">ID</th>
+              <th className="py-2 px-4 text-left">Vehicle ID</th>
               <th className="py-2 px-4 text-left">Departure</th>
               <th className="py-2 px-4 text-left">ETA</th>
               <th className="py-2 px-4 text-left">Total Price</th>

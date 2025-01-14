@@ -20,18 +20,18 @@ const AdminNav = () => {
     setactiveNavItemIndex(index === activeNavItemIndex ? null : index)
   }
   const links = [
-    {
-      title: 'Dashboard',
-      link: '/admin',
-      icon: faHouse,
-      subLinks: [],
-    },
-    {
-      title: 'Employees',
-      link: '/admin/employees',
-      icon: faIdCard,
-      subLinks: [],
-    },
+    // {
+    //   title: 'Dashboard',
+    //   link: '/admin',
+    //   icon: faHouse,
+    //   subLinks: [],
+    // },
+    // {
+    //   title: 'Employees',
+    //   link: '/admin/employees',
+    //   icon: faIdCard,
+    //   subLinks: [],
+    // },
     {
       title: 'Vehicles',
       link: '/admin/vehicles',
@@ -50,12 +50,12 @@ const AdminNav = () => {
       icon: faShoppingCart,
       subLinks: [],
     },
-    {
-      title: 'Trouble',
-      link: '/admin/trouble',
-      icon: faTriangleExclamation,
-      subLinks: [],
-    },
+    // {
+    //   title: 'Trouble',
+    //   link: '/admin/trouble',
+    //   icon: faTriangleExclamation,
+    //   subLinks: [],
+    // },
   ]
   return (
     <>
