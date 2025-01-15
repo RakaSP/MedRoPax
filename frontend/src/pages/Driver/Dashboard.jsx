@@ -31,6 +31,11 @@ const Dashboard = () => {
 
   let data = JSON.parse(localStorage.getItem('mappedData'))[indexOfVehicle]
 
+  let coords = []
+  coords.push(depotCoord)
+  data.map((order) => coords.push(order.coord))
+  coords.push(depotCoord)
+  console.log(coords)
   let totalWeight = 0
   data.map((order) => {
     order.item_list.map((item) => {
@@ -38,10 +43,11 @@ const Dashboard = () => {
     })
   })
   totalWeight = totalWeight / 1000
-  console.log(totalWeight)
 
   let origin, destination
+
   for (let i = 0; i < data.length; i++) {
+    console.log(data[i].delivered)
     if (data[i].delivered === false) {
       if (i === 0) {
         origin = depotCoord
@@ -208,7 +214,7 @@ const Dashboard = () => {
                 ) {
                   showButton = true
                 }
-
+                console.log(order.delivered)
                 return (
                   <div
                     key={order.id}
@@ -245,9 +251,16 @@ const Dashboard = () => {
                               : 'text-yellow-500 bg-yellow-500'
                           } rounded-full bg-opacity-20 py-1 px-2 text-sm font-semibold`}
                         >
-                          {order.delivered === true
+                          {/* {order.delivered === true
                             ? 'Delivered'
                             : data[index - 1].delivered === true
+                            ? 'In Transit'
+                            : 'Pending'} */}
+                          {order.delivered === true
+                            ? 'Delivered'
+                            : index === 0 && order.delivered === false
+                            ? 'In Transit'
+                            : index > 0 && data[index - 1].delivered === true
                             ? 'In Transit'
                             : 'Pending'}
                         </div>
@@ -326,7 +339,7 @@ const Dashboard = () => {
       <div className="w-[60%] bg-bg_card min-h-full border-2 border-gray-200 flex items-center justify-center">
         {!noRoute && (
           <>
-            <MapPlaceholder origin={origin} destination={destination} />
+            <MapPlaceholder coords={coords} />
           </>
         )}
         {noRoute && (

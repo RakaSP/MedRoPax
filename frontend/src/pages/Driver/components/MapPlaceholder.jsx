@@ -1,6 +1,16 @@
 import React from 'react'
 
-const MapPlaceholder = ({ origin, destination }) => {
+const MapPlaceholder = ({ coords }) => {
+  // Extract the origin, destination, and waypoints
+  const origin = coords[0] // First coordinate is the origin
+  const destination = coords[coords.length - 1] // Last coordinate is the destination
+  const waypoints = coords.slice(1, -1) // Everything in between are waypoints
+
+  // Join waypoints as a pipe-separated string of "lat,lng"
+  const waypointString = waypoints
+    .map(([lat, lng]) => `${lat},${lng}`)
+    .join('|')
+
   return (
     <div className="h-full w-full">
       <iframe
@@ -9,10 +19,9 @@ const MapPlaceholder = ({ origin, destination }) => {
         loading="lazy"
         allowFullScreen
         referrerPolicy="no-referrer-when-downgrade"
-        src={`https://www.google.com/maps/embed/v1/directions?key=AIzaSyCJw4aZ96JtpPHgj8lKyrQY5OBnWTREyO4
-    &origin=${origin}
-    &destination=${destination}
-    &mode=driving`}
+        src={`https://www.google.com/maps/embed/v1/directions?origin=${origin}&destination=${destination}${
+          waypoints.length > 0 ? `&waypoints=${waypointString}` : ''
+        }&mode=driving&key=AIzaSyCJw4aZ96JtpPHgj8lKyrQY5OBnWTREyO4`}
       ></iframe>
     </div>
   )

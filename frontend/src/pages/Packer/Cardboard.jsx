@@ -62,12 +62,10 @@ const Cardboard = () => {
             <div className="w-[360px] ml-4 flex flex-col border-2 border-[#6F6F70] rounded-lg mt-4 bg-white p-[20px] max-h-[800px] overflow-y-scroll">
               {packingInfo.ItemList.map((item) => (
                 <div
-                  key={(item.ID, {})}
+                  key={item.id}
                   className="border-2 border-[#6F6F70] rounded-md w-full p-4 mb-4"
                 >
-                  <h3>
-                    {item.Name}: {item.ID}
-                  </h3>
+                  <h3>Item ID: {item.id}</h3>
                   <div>
                     Pos X: {item.PosX} Pos Y: {item.PosY} Pos Z: {item.PosZ}
                   </div>

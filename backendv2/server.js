@@ -21,6 +21,37 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+const pdfParse = require("pdf-parse");
+
+// Endpoint to read a PDF file and extract text
+
+app.post("/read-pdf", (req, res) => {
+  const { indexOfVehicle } = req.body;
+  const pdfPath = path.join(
+    __dirname,
+    "MedRoPax-Solver/problem_result",
+    `Loading-Plan-${indexOfVehicle}.pdf`
+  ); // Path to the PDF file
+
+  console.log(pdfPath);
+  // Check if the PDF file exists
+  fs.exists(pdfPath, (exists) => {
+    if (!exists) {
+      return res
+        .status(404)
+        .json({ success: false, error: "PDF file not found" });
+    }
+
+    // Send the PDF file as a response
+    res.sendFile(pdfPath, (err) => {
+      if (err) {
+        console.error(`Error sending PDF file: ${err.message}`);
+        res.status(500).json({ success: false, error: err.message });
+      }
+    });
+  });
+});
+
 app.get("/load", (req, res) => {
   // load problem
   let problem, result;
@@ -49,7 +80,12 @@ app.get("/load", (req, res) => {
     try {
       result = JSON.parse(data);
 
-      res.json({ success: true, problem, result });
+      res.json({
+        success: true,
+        problem,
+        result,
+        dirPath,
+      });
     } catch (parseError) {
       console.error(`Error parsing result file: ${parseError.message}`);
       res.status(500).json({ success: false, error: parseError.message });
@@ -123,6 +159,11 @@ app.post("/solve", upload.single("file"), (req, res) => {
       `${originalFileNameWithoutExt}_result.json`
     );
 
+    const dirPath = path.join(
+      __dirname,
+      "MedRoPax-Solver",
+      `${originalFileNameWithoutExt}_result`
+    );
     console.log(resultFilePath);
 
     console.log(`Running python script: python ${scriptPath} ${args}`);
@@ -158,7 +199,12 @@ app.post("/solve", upload.single("file"), (req, res) => {
 
               try {
                 problem = JSON.parse(data);
-                return res.json({ success: true, problem, result });
+                return res.json({
+                  success: true,
+                  problem,
+                  result,
+                  dirPath,
+                });
               } catch (parseError) {
                 console.error(
                   `Error parsing result file: ${parseError.message}`

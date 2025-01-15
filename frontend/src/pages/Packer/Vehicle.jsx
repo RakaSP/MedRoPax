@@ -4,6 +4,7 @@ import styles from '../../styles/style'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDownload } from '@fortawesome/free-solid-svg-icons'
 import { useParams } from 'react-router-dom'
+import axios from 'axios'
 const Vehicle = () => {
   let { vehicleId } = useParams()
   vehicleId = Number(vehicleId)
@@ -44,6 +45,37 @@ const Vehicle = () => {
       return mappedData
     })
   }
+
+  const filePath = `file:///${localStorage.getItem(
+    'dirPath'
+  )}\\Loading-Plan-${indexOfVehicle}.pdf`
+
+  const handleOpenGuidebook = () => {
+    console.log(indexOfVehicle)
+    axios
+      .post(
+        'http://localhost:5000/read-pdf',
+        { indexOfVehicle },
+        {
+          responseType: 'blob',
+        }
+      ) // Set responseType to 'blob' to handle binary data
+      .then((response) => {
+        const file = new Blob([response.data], { type: 'application/pdf' })
+        const fileURL = URL.createObjectURL(file)
+
+        // Create a temporary link to trigger the download
+        const link = document.createElement('a')
+        link.href = fileURL
+        link.download = 'guidebook.pdf' // Set the desired file name
+        link.click() // Trigger the download
+        URL.revokeObjectURL(fileURL) // Clean up the object URL
+      })
+      .catch((error) => {
+        console.error('Error fetching the PDF:', error)
+      })
+  }
+
   return (
     <div className="py-[10px] px-10">
       <h4 className={`${styles.heading4} mt-7 text-text_primary mb-5`}>
@@ -56,10 +88,14 @@ const Vehicle = () => {
               <RenderPlotly2 container={container} />
             </div>
             <div className="pl-4">
-              <button className="w-full bg-red-500 rounded-lg h-[64px] text-2xl font-roboto text-white flex justify-start items-center px-6 gap-8">
+              <button
+                className="w-full bg-red-500 rounded-lg h-[64px] text-2xl font-roboto text-white flex justify-start items-center px-6 gap-8"
+                onClick={handleOpenGuidebook}
+              >
                 <FontAwesomeIcon icon={faDownload} />
                 Download Guidebook
               </button>
+
               <div className="w-[360px] flex flex-col border-2 border-[#6F6F70] rounded-lg mt-4 h-full max-h-[720px] bg-white p-[20px] overflow-y-scroll">
                 {container.ItemList.map((item) => (
                   <div
@@ -67,7 +103,7 @@ const Vehicle = () => {
                     className="border-2 border-[#6F6F70] rounded-md w-full p-4 mb-4"
                   >
                     <h3>
-                      {item.type}: {item.id}
+                      {item.type} ID: {item.id}
                     </h3>
                     <div>
                       Pos X: {item.PosX} Pos Y: {item.PosY} Pos Z: {item.PosZ}

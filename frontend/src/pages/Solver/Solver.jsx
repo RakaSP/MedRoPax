@@ -51,6 +51,8 @@ const Vehicle = () => {
         },
       })
       .then((response) => {
+        let dirPath = response.data.dirPath
+        localStorage.setItem('dirPath', dirPath)
         let problem = response.data.problem
         localStorage.setItem('problem', JSON.stringify(problem))
 
@@ -80,9 +82,9 @@ const Vehicle = () => {
 
         tourList = tourList.map((data, index) => {
           const arrivalTime = arrivalTimeList[index]
-          return data.map((order, index) => {
-            let orderDetail = problem.order_list[index]
 
+          return data.map((orderIndex, index) => {
+            let orderDetail = problem.order_list[orderIndex]
             orderDetail.item_list = orderDetail.item_list.map((itemId) => {
               const itemDetail = problem.product_type.find(
                 (product) => product.id === itemId

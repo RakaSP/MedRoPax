@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-// import { orders } from '../../constants'
 import { NavLink } from 'react-router-dom'
 import styles from '../../styles/style'
 
@@ -26,6 +25,8 @@ const OrderList = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const rowsPerPage = 15
 
+  let orders = JSON.parse(localStorage.getItem('mappedData'))
+  orders = orders.flatMap((packingInfo) => packingInfo)
   const indexOfLastRow = currentPage * rowsPerPage
   const indexOfFirstRow = indexOfLastRow - rowsPerPage
   const currentOrders = orders.slice(indexOfFirstRow, indexOfLastRow)
@@ -34,10 +35,6 @@ const OrderList = () => {
   const handleClick = (event) => {
     setCurrentPage(Number(event.target.id))
   }
-
-  let orders = JSON.parse(localStorage.getItem('mappedData'))
-
-  orders = orders.flatMap((packingInfo) => packingInfo)
 
   const renderPageNumbers = () => {
     const pageNumbers = []

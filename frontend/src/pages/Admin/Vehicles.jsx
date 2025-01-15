@@ -29,7 +29,9 @@ const Vehicles = () => {
     }
 
     let totalWeight = 0
+    if (index === 1) console.log(packingInformation[index])
     packingInformation[index].map((order) => {
+      if (index === 1) console.log(order)
       order.item_list.map((item) => {
         totalWeight += item.weight
       })

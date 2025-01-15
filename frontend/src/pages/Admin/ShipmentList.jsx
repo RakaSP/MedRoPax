@@ -68,7 +68,7 @@ const ShipmentList = () => {
         id: vehicleID,
         departure: '09:00',
         ETA: ETA,
-        total_weight: totalWeigth,
+        total_weight: totalWeigth / 1000,
         total_distance: totalDistance,
         packing_information: detail,
       }

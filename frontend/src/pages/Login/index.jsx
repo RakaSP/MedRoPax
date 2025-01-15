@@ -45,6 +45,7 @@ const Login = () => {
       navigate(`/driver/${defId}`)
     else if (username === 'packer' && password === 'packer')
       navigate(`/packer/vehicle/${defId}`)
+    else if (username === 'solver' && password === 'solver') navigate('/solver')
     else alert('Invalid username or password')
   }
   return (
