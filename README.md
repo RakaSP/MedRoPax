@@ -213,7 +213,3 @@ L. Wei, Z. Zhang, A. Lim, An adaptive variable neighborhood search for a
 heterogeneous fleet vehicle routing problem with three-dimensional load-
 ing constraints, IEEE Computational Intelligence Magazine 9 (4) (2014)
 18–30. doi:[10.1109/MCI.2014.2350933](https://doi.org/10.1109/MCI.2014.2350933).
-
-# Under Maintenance
-
-The packing guide PDF generation are currently under maintenance and rehaul, and hence are deactivated
