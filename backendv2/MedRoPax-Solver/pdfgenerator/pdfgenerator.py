@@ -69,7 +69,7 @@ class PDF(FPDF):
         ) as table:
             row = table.row()
             row.cell(img=self.image_logo_path, rowspan=4)
-            row.cell("PETUNJUK PELAKSANAAN PEMUATAN KARGO UMUM (IMPLEMENTATION INSTRUCTION OF CARGO LOADING)", rowspan=3)
+            row.cell("GENERAL INSTRUCTION OF CARGO LOADING", rowspan=3)
             row.cell("REV.")
             row.cell("00")
 
@@ -81,7 +81,7 @@ class PDF(FPDF):
             row.cell(f"{self.uuid}/IFF/{datetime.datetime.now().strftime('%Y')}", colspan=2)
 
             row = table.row()
-            row.cell(f"PT. {self.company_name}")
+            row.cell(f"{self.company_name}")
             row.cell(f"Page {self.page_no()}", colspan=2)
         self.set_draw_color(0, 0, 0)
         self.set_fill_color(255, 255, 255)
@@ -214,7 +214,7 @@ class PDF(FPDF):
 
     def second_page(self):
         self.add_page("L", "a4")
-        self.write(text="Lampiran 1: Form Penyusunan Kargo\n")
+        self.write(text="Loading Manifest\n")
         with self.table(borders_layout="NONE",
             cell_fill_color=(255, 255, 255),
             #cell_fill_mode=TableCellFillMode.ROWS,
@@ -227,15 +227,15 @@ class PDF(FPDF):
             width=270,
         ) as table:
             row = table.row()
-            row.cell("Nomor Kontainer")
+            row.cell("Container ID")
             row.cell(f": {self.vehicle_box.id}")
 
             row = table.row()
-            row.cell("Tanggal Pemuatan")
+            row.cell("Date of Loading")
             row.cell(f": {datetime.datetime.now().strftime('%d/%m/%Y')}")
 
             row = table.row()
-            row.cell("Ukuran Kontainer")
+            row.cell("Container Size")
             row.cell(f": {self.vehicle_box.size[0]} x {self.vehicle_box.size[1]} x {self.vehicle_box.size[2]} cm")
 
         self.ln(15)
@@ -256,14 +256,14 @@ class PDF(FPDF):
             width=270,
         ) as table:
             row = table.row()
-            row.cell("Packing Kendaraan", colspan=5)
+            row.cell("Vehicle Packing", colspan=5)
 
             row = table.row()
-            row.cell("No. Urut")
-            row.cell("Jenis Barang")
-            row.cell("Dimensi (P x L x T)")
-            row.cell("Berat")
-            row.cell("Posisi dalam Kontainer")
+            row.cell("No.")
+            row.cell("Item Type")
+            row.cell("Dimension (L x W x H)")
+            row.cell("Weight")
+            row.cell("Position in Container")
 
             self.set_draw_color(0, 0, 0)
 
@@ -309,11 +309,11 @@ class PDF(FPDF):
                     row.cell(f"Packing Box {item.name}", colspan=5)
 
                     row = table.row()
-                    row.cell("No. Urut")
-                    row.cell("Jenis Barang")
-                    row.cell("Dimensi (P x L x T)")
-                    row.cell("Berat")
-                    row.cell("Posisi dalam Kontainer")
+                    row.cell("No.")
+                    row.cell("Item Type")
+                    row.cell("Dimension (L x W x H)")
+                    row.cell("Weight")
+                    row.cell("Position in Container")
 
                     self.set_draw_color(0, 0, 0)
 
@@ -329,24 +329,24 @@ class PDF(FPDF):
 
 
 
-        self.write(text="Diagram/Sketsa Penyusunan:\n")
-        self.write(text="(Sertakan gambar atau sketsa untuk memperjelas penyusunan dan posisi cargo)\n")
+        # self.write(text="Diagram/Sketsa Penyusunan:\n")
+        # self.write(text="(Sertakan gambar atau sketsa untuk memperjelas penyusunan dan posisi cargo)\n")
 
         self.ln(15)
-        self.write(text=f"Saya, {self.author}, telah memeriksa dan memverifikasi bahwa urutan penyusunan cargo dalam kontainer telah sesuai dengan petunjuk pelaksanaan dan keamanan barang terjamin.\n\n")
-        self.write(text=f"Tanggal: {datetime.datetime.now().strftime('%d/%m/%Y')}\n\n")
-        self.write(text="Tanda Tangan: ______________\n\n")
+        self.write(text=f"I, Author, have verified the safety of the cargo placement and that the loading plan has obeyed the regulations.\n\n")
+        self.write(text=f"Date: {datetime.datetime.now().strftime('%d/%m/%Y')}\n\n")
+        self.write(text="Signature: ______________\n\n")
 
 
 
-def generate_vehicle_shipment_pdf(vehicle_box: Box, output_path: str, image_logo_path: str, company_name: str):
+def generate_vehicle_shipment_pdf(vehicle_box: Box, output_path: str, image_logo_path: str = "pdfgenerator/MedRoPax_Logo.png", company_name: str = "MedRoPax"):
     pdf = PDF(vehicle_box, image_logo_path, company_name)
-    pdf.set_title("Formulir Panduan Packing")
-    pdf.set_author("Santana Yuda Pradata")
+    # pdf.set_title("Formulir Panduan Packing")
+    # pdf.set_author("Santana Yuda Pradata")
     #pdf.print_chapter(1, "A RUNAWAY REEF", "20k_c1.txt")
     #pdf.print_chapter(2, "THE PROS AND CONS", "20k_c1.txt")
 
-    pdf.first_page()
+    # pdf.first_page()
     pdf.second_page()
 
     pdf.output(output_path)

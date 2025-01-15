@@ -3,12 +3,23 @@ import datetime
 
 import json
 import sys
+import os
 
 from vns.saving import saving
 from vns.route_dp import improve_tours_by_dp
 from vrp3d.vrp3d import VRP3D
 
 from vrp3d.solution import Solution
+
+from pdfgenerator.pdfgenerator import generate_vehicle_shipment_pdf
+
+
+def generate_loading_plans(problem: VRP3D, file_path: str):
+    file_path = file_path.split('.')[0]
+    os.mkdir(file_path)
+    for i, vec in enumerate(problem.vehicle_list):
+        generate_vehicle_shipment_pdf(vec.box, f"{file_path}/Loading-Plan-{i}.pdf")
+
 
 
 def serialize_to_file(obj, file_path):
@@ -28,6 +39,7 @@ def run():
     for order in problem.order_list:
         order.pack_items_into_cardboard_boxes(problem.cardboard_list)
     solution = saving(problem)
+    generate_loading_plans(problem, sys.argv[2])
     problem.reset(solution)
     
     # solution = improve_tours_by_dp(solution, problem)
