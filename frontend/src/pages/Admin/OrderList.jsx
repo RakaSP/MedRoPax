@@ -13,10 +13,6 @@ const formatDateTime = (dateString) => {
   return `${formattedDate} ${formattedTime}`
 }
 
-let orders = JSON.parse(localStorage.getItem('mappedData'))
-
-orders = orders.flatMap((packingInfo) => packingInfo)
-
 const formatCurrency = (amount) => {
   return new Intl.NumberFormat('id-ID', {
     style: 'currency',
@@ -38,6 +34,10 @@ const OrderList = () => {
   const handleClick = (event) => {
     setCurrentPage(Number(event.target.id))
   }
+
+  let orders = JSON.parse(localStorage.getItem('mappedData'))
+
+  orders = orders.flatMap((packingInfo) => packingInfo)
 
   const renderPageNumbers = () => {
     const pageNumbers = []
