@@ -9,6 +9,15 @@ MedRoPax uses a straightforward two-stage optimization method, where the box pac
 
 # Setup
 
+## Dependencies
+
+Before cloning and install MedRoPax, users need to have:
+
+- Python with Pip and Venv installed
+- NodeJS & Node Package Manager installed
+
+## Installation
+
 MedRoPax build system supports the Windows operating system. To setup MedRoPax, first, clone the source code from the GitHub repository:
 
 ```sh

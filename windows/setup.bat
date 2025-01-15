@@ -1,8 +1,7 @@
 @echo off
 cd ..\backendv2\MedRoPax-Solver
-python setup.py
+call python setup.py
 cd ..\..\frontend
-npm install
+call npm install
 cd ..\backendv2
-npm install
-
+call npm install
