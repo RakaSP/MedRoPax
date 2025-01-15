@@ -169,7 +169,7 @@ app.post("/solve", upload.single("file"), (req, res) => {
     console.log(`Running python script: python ${scriptPath} ${args}`);
 
     exec(
-      `python ${scriptPath} ${args}`,
+      `.\\vrp-venv\\Scripts\\python.exe ${scriptPath} ${args}`,
       { cwd: "./MedRoPax-Solver" },
       (error, stdout, stderr) => {
         if (error) {
