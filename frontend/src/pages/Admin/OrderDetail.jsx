@@ -28,12 +28,6 @@ const OrderDetail = () => {
     <div className="py-[10px] px-10">
       <h4 className={`${styles.heading4} mt-7 text-text_primary`}>
         Order ID #{order.id}
-        {/* <NavLink
-          to={`/admin/shipment/1`}
-          className="ml-4 text-text_primary !text-[16px] cursor-pointer hover:text-highlight"
-        >
-          (Vehicle #1)
-        </NavLink> */}
       </h4>
       <div className="flex-col flex justify-between mt-7 py-6 px-10 bg-bg_card rounded-lg shadow-lg">
         <div className="flex flex-col text-text_primary font-poppins">
@@ -101,7 +95,6 @@ const OrderDetail = () => {
 
             const qty = Math.floor(Math.random() * (15 - 1 + 1)) + 1
 
-            // Calculate subtotal
             const subTotal = price * qty
 
             totalPrice += subTotal
@@ -146,14 +139,7 @@ const OrderDetail = () => {
               <FontAwesomeIcon icon={faUser} />
               <span>{order.customer_name}</span>
             </div>
-            {/* <div className="my-2 truncate">
-              <FontAwesomeIcon icon={faEnvelope} />
-              <span>LenoreHinrich@gmail.com</span>
-            </div>
-            <div className="my-2 truncate">
-              <FontAwesomeIcon icon={faPhone} />
-              <span>+62 712 805 0876</span>
-            </div> */}
+
             <div className="my-2 truncate">
               <FontAwesomeIcon icon={faLocationArrow} />
               <span>

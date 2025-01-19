@@ -42,7 +42,7 @@ const Vehicle = () => {
 
   const handleSolve = () => {
     const formData = new FormData()
-    formData.append('file', file) // 'file' should be the file object
+    formData.append('file', file)
 
     axios
       .post('http://localhost:5000/solve', formData, {

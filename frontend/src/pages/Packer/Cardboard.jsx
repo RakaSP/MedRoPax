@@ -1,7 +1,6 @@
 import React from 'react'
 import RenderPlotly from './components/RenderPlotly'
 import styles from '../../styles/style'
-import { cardboard } from '../../constants/pack'
 import { useParams } from 'react-router-dom'
 const Cardboard = () => {
   let { vehicleId, cardboardId } = useParams()

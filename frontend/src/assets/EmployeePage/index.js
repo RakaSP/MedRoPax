@@ -4,7 +4,6 @@ import truck from './truck.png'
 import whatsapp from './whatsapp_icon.jpg'
 import mtLogoT from './new-mt-logo.png'
 
-/* Vehicles Page Assets */
 import scooter2d from './scooter.png'
 import scooter3d from './scooter2.jpg'
 import truck2d from './2d-truck.png'

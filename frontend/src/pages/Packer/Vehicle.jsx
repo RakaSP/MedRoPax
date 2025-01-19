@@ -51,7 +51,6 @@ const Vehicle = () => {
   )}\\Loading-Plan-${indexOfVehicle}.pdf`
 
   const handleOpenGuidebook = () => {
-    console.log(indexOfVehicle)
     axios
       .post(
         'http://localhost:5000/read-pdf',
@@ -59,17 +58,16 @@ const Vehicle = () => {
         {
           responseType: 'blob',
         }
-      ) // Set responseType to 'blob' to handle binary data
+      )
       .then((response) => {
         const file = new Blob([response.data], { type: 'application/pdf' })
         const fileURL = URL.createObjectURL(file)
 
-        // Create a temporary link to trigger the download
         const link = document.createElement('a')
         link.href = fileURL
-        link.download = 'guidebook.pdf' // Set the desired file name
-        link.click() // Trigger the download
-        URL.revokeObjectURL(fileURL) // Clean up the object URL
+        link.download = 'guidebook.pdf'
+        link.click()
+        URL.revokeObjectURL(fileURL)
       })
       .catch((error) => {
         console.error('Error fetching the PDF:', error)

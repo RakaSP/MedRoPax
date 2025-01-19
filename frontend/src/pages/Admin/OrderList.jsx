@@ -93,17 +93,7 @@ const OrderList = () => {
                 <td className="py-2 px-4">
                   X:{order.coord[0].toFixed(2)} Y:{order.coord[1].toFixed(2)}
                 </td>
-                {/* <td className="py-2 px-4">
-                  {new Date(order.ETA).toLocaleDateString('en-GB')}
-                </td> */}
-                {/* <td className="py-2 px-4">
-                  {formatCurrency(
-                    order.items.reduce(
-                      (acc, item) => acc + parseInt(item.price),
-                      0
-                    )
-                  )}
-                </td> */}
+
                 <td className="py-2 px-4 text-center">
                   <span
                     className={`${

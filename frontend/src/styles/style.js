@@ -1,10 +1,3 @@
-/*
-Color
-normal text: 474554
-inactive/more dark: #3b3b3b or #5e5e5e
-highlight: #8083ff
-border: #D6F4FF
-*/
 const styles = {
   boxWidth: 'xl:max-w-[1280px] w-full',
 

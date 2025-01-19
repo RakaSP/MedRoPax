@@ -1,5 +1,5 @@
 import React from 'react'
-import { useOutletContext, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import ReactStars from 'react-rating-stars-component'
 import { truck3d } from '../../assets/EmployeePage'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -7,7 +7,6 @@ import { faUser, faPhone, faCheck } from '@fortawesome/free-solid-svg-icons'
 import MapPlaceholder from './components/MapPlaceholder'
 
 const Dashboard = () => {
-  const shipment = useOutletContext()
   let { id } = useParams()
   id = Number(id)
   const indexOfVehicle = JSON.parse(
@@ -35,7 +34,7 @@ const Dashboard = () => {
   coords.push(depotCoord)
   data.map((order) => coords.push(order.coord))
   coords.push(depotCoord)
-  console.log(coords)
+
   let totalWeight = 0
   data.map((order) => {
     order.item_list.map((item) => {
@@ -47,7 +46,6 @@ const Dashboard = () => {
   let origin, destination
 
   for (let i = 0; i < data.length; i++) {
-    console.log(data[i].delivered)
     if (data[i].delivered === false) {
       if (i === 0) {
         origin = depotCoord
@@ -107,8 +105,7 @@ const Dashboard = () => {
         <div className="w-full flex flex-row justify-between items-center">
           <div className="flex flex-col">
             <h4 className="font-poppins text-text_primary font-bold text-xl">
-              driver xyz
-              {/* need repair */}
+              Driver XYZ
             </h4>
             <p className="font-poppins text-text_primary opacity-60 text-base font-semibold">
               Driver
@@ -143,7 +140,7 @@ const Dashboard = () => {
         {!noRoute && (
           <>
             <div className="w-full font-poppins text-text_primary text-lg font-semibold my-4 text-center">
-              Assigned to Delivery ID {shipment.id}
+              Assigned to Delivery ID {id}
             </div>
             <hr />
             <div className="w-full flex flex-row mt-4 gap-4">
@@ -157,7 +154,6 @@ const Dashboard = () => {
                   {generateRandomPlate()}
                 </h5>
                 <p className="font-poppins text-text_primary text-sm font-semibold">
-                  {/* need update */}
                   {totalWeight.toFixed(2)}/
                   {vehicleDetails.box_max_weight.toFixed(2)} kg,{' '}
                   {totalDistance.toFixed(2)} km
@@ -190,18 +186,6 @@ const Dashboard = () => {
                 </div>
               </div>
               {data.map((order, index) => {
-                // const orderIndex = orderList.findIndex(
-                //   (orderA) => orderA.id === order.id
-                // )
-
-                // orderIndexList.push(orderIndex)
-
-                // const distance =
-                //   index === 0
-                //     ? distanceMatrix[0][orderIndex + 1]
-                //     : distanceMatrix[orderIndexList[index - 1] + 1][
-                //         orderIndexList[index] + 1
-                //       ]
                 const distance = distanceList[index]
 
                 let showButton = false
@@ -214,7 +198,7 @@ const Dashboard = () => {
                 ) {
                   showButton = true
                 }
-                console.log(order.delivered)
+
                 return (
                   <div
                     key={order.id}
@@ -251,11 +235,6 @@ const Dashboard = () => {
                               : 'text-yellow-500 bg-yellow-500'
                           } rounded-full bg-opacity-20 py-1 px-2 text-sm font-semibold`}
                         >
-                          {/* {order.delivered === true
-                            ? 'Delivered'
-                            : data[index - 1].delivered === true
-                            ? 'In Transit'
-                            : 'Pending'} */}
                           {order.delivered === true
                             ? 'Delivered'
                             : index === 0 && order.delivered === false
@@ -303,35 +282,6 @@ const Dashboard = () => {
                   </div>
                 )
               })}
-
-              {/* <div className="w-full flex flex-row items-stretch mb-4">
-                <div className="flex flex-row mr-4 pt-2 w-[80px] justify-between relative">
-                  <p className="text-text_primary text-xs opacity-60 font-semibold">
-                    <span className="block">
-                      {data[data.length - 1].arrivalTime}
-                    </span>
-                    <span className="block mt-1 whitespace-nowrap">
-                      (12 km)
-                    </span>
-                  </p>
-                  <div className="w-4 h-4 bg-highlight rounded-full flex justify-center"></div>
-                </div>
-                <div className="w-full bg-bg_card rounded-lg shadow-lg p-4">
-                  <div className="w-full flex flex-row justify-between items-center font-poppins">
-                    <h5 className="text-text_primary font-semibold text-lg">
-                      Depot
-                    </h5>
-                    <div className="rounded-full text-yellow-500 bg-yellow-500 bg-opacity-20 py-1 px-2 text-sm font-semibold">
-                      {orderIndex === shipment.orders.length
-                        ? 'In Transit'
-                        : 'Pending'}
-                    </div>
-                  </div>
-                  <p className="text-text_primary opacity-60 font-poppins text-base font-semibold">
-                    {shipment.warehouseEnd}
-                  </p>
-                </div>
-              </div> */}
             </div>
           </>
         )}

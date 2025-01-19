@@ -330,17 +330,6 @@ const RenderPlotly = ({ container }) => {
           hoverinfo: 'none',
           showlegend: false,
         })
-        // gridLines.push({
-        //   type: "scatter3d",
-        //   mode: "text",
-        //   text: `${i * 10}`,
-        //   x: [container.SizeX + 10],
-        //   y: [i * 10],
-        //   z: [0],
-        //   textposition: "center",
-        //   hoverinfo: "none",
-        //   showlegend: false,
-        // });
       } else if (cam.z < 0) {
         gridLines.push({
           type: 'scatter3d',
@@ -352,17 +341,6 @@ const RenderPlotly = ({ container }) => {
           hoverinfo: 'none',
           showlegend: false,
         })
-        // gridLines.push({
-        //   type: "scatter3d",
-        //   mode: "text",
-        //   text: `${i * 10}`,
-        //   x: [container.SizeX + 10],
-        //   y: [i * 10],
-        //   z: [container.SizeZ],
-        //   textposition: "center",
-        //   hoverinfo: "none",
-        //   showlegend: false,
-        // });
       }
       if (cam.x >= 0) {
         gridLines.push({
