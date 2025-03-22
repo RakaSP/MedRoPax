@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGear, faTimes } from '@fortawesome/free-solid-svg-icons'
+import axios from 'axios'
 
 const Vehicle = () => {
   const [uploading, setUploading] = useState(false)
@@ -40,25 +41,72 @@ const Vehicle = () => {
   }
 
   const handleSolve = () => {
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = () => {
-        const content = reader.result
-        const blob = new Blob([content], { type: 'application/json' })
-        const url = URL.createObjectURL(blob)
-        const a = document.createElement('a')
-        a.href = url
-        a.download = `${file.name
-          .split('.')
-          .slice(0, -1)
-          .join('.')}_solved.json`
-        document.body.appendChild(a)
-        a.click()
-        document.body.removeChild(a)
-        URL.revokeObjectURL(url)
-      }
-      reader.readAsText(file)
-    }
+    const formData = new FormData()
+    formData.append('file', file)
+
+    axios
+      .post('http://localhost:5000/solve', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then((response) => {
+        let dirPath = response.data.dirPath
+        localStorage.setItem('dirPath', dirPath)
+        let problem = response.data.problem
+        localStorage.setItem('problem', JSON.stringify(problem))
+
+        let result = response.data.result
+
+        let arrivalTimeList = result.arrival_time_list
+
+        const startTime = '09:00'
+
+        arrivalTimeList = arrivalTimeList.map((arrivalTime) => {
+          return arrivalTime.map((deliveryTime) => {
+            const [hours, minutes] = startTime.split(':').map(Number)
+            const totalMinutes = hours * 60 + minutes + Math.floor(deliveryTime)
+
+            const newHours = Math.floor(totalMinutes / 60)
+            const newMinutes = totalMinutes % 60
+
+            return `${String(newHours).padStart(2, '0')}:${String(
+              newMinutes
+            ).padStart(2, '0')}`
+          })
+        })
+
+        localStorage.setItem('arrivalTimeList', JSON.stringify(arrivalTimeList))
+
+        let tourList = result.tour_list
+
+        tourList = tourList.map((data, index) => {
+          const arrivalTime = arrivalTimeList[index]
+
+          return data.map((orderIndex, index) => {
+            let orderDetail = problem.order_list[orderIndex]
+            orderDetail.item_list = orderDetail.item_list.map((itemId) => {
+              const itemDetail = problem.product_type.find(
+                (product) => product.id === itemId
+              )
+              return { ...itemDetail }
+            })
+            return {
+              id: orderDetail,
+              arrivalTime: arrivalTime[index],
+              ...orderDetail,
+              delivered: false,
+            }
+          })
+        })
+
+        localStorage.setItem('mappedData', JSON.stringify(tourList))
+        localStorage.setItem('result', JSON.stringify(result))
+        alert('Problem solved successfully')
+      })
+      .catch((error) => {
+        console.error('Error uploading file:', error)
+      })
   }
 
   const handleCancel = () => {
@@ -67,9 +115,32 @@ const Vehicle = () => {
     setFile(null)
   }
 
+  const handleClickGenerateProblem = async () => {
+    try {
+      const response = await axios.post(
+        'http://localhost:5000/generate-problem'
+      )
+
+      localStorage.setItem('problem', JSON.stringify(response.data.problem))
+      alert('Problem generated successfully, check your download folder.')
+    } catch (error) {
+      console.error('Error generating problem:', error)
+    }
+  }
+
   return (
     <div className="py-10 px-10">
       <h4 className="text-3xl font-bold text-text_primary mb-5">Solver</h4>
+      <div className="p-4">
+        <p className="text-gray-800 text-lg">Don't have a problem yet?</p>
+        <button
+          onClick={handleClickGenerateProblem}
+          className="bg-blue-500 text-white py-2 px-4 text-lg rounded-md mr-2 hover:bg-blue-600"
+        >
+          Click here to generate problem
+        </button>
+      </div>
+
       <div className="border-dashed border-2 hover:border-[#3e4756] transition duration-200 rounded-lg text-lg font-roboto flex items-center gap-4 w-[420px] h-[160px] bg-white justify-center">
         {!uploading ? (
           <div className="flex flex-col items-center w-full h-full">

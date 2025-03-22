@@ -21,18 +21,6 @@ const AdminNav = () => {
   }
   const links = [
     {
-      title: 'Dashboard',
-      link: '/admin',
-      icon: faHouse,
-      subLinks: [],
-    },
-    {
-      title: 'Employees',
-      link: '/admin/employees',
-      icon: faIdCard,
-      subLinks: [],
-    },
-    {
       title: 'Vehicles',
       link: '/admin/vehicles',
       icon: faTruck,
@@ -50,16 +38,10 @@ const AdminNav = () => {
       icon: faShoppingCart,
       subLinks: [],
     },
-    {
-      title: 'Trouble',
-      link: '/admin/trouble',
-      icon: faTriangleExclamation,
-      subLinks: [],
-    },
   ]
   return (
     <>
-      <nav className="mt-3">
+      <nav className="mt-3 h-full px-[30px]">
         {links.map((item, index) => (
           <React.Fragment key={item.title}>
             <NavLink

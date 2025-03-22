@@ -17,14 +17,36 @@ const Login = () => {
     { username: 'packer', password: 'packer' },
     { username: 'solver', password: 'solver' },
   ]
+
+  const defId =
+    JSON.parse(localStorage.getItem('problem'))?.vehicle_list?.[0]?.id || null
+
+  const problem = localStorage.getItem('problem') || undefined
+  const result = localStorage.getItem('result') || undefined
+
+  let needLoad = false
+  if (problem === undefined || result === undefined) {
+    needLoad = true
+  }
+
   const handleLogin = (event) => {
     event.preventDefault()
-    if (username === 'admin' && password === 'admin') navigate('/admin')
-    else if (username === 'driver' && password === 'driver') navigate('/driver')
+
+    if (username === 'solver' && password === 'solver') navigate('/solver')
+
+    if (needLoad && (username !== 'solver' || password !== 'solver')) {
+      alert('Please load the necessary data in solver page first.')
+      return
+    }
+
+    if (username === 'admin' && password === 'admin')
+      navigate('/admin/vehicles')
+    else if (username === 'driver' && password === 'driver')
+      navigate(`/driver/${defId}`)
     else if (username === 'packer' && password === 'packer')
-      navigate('/packer/vehicle/1')
+      navigate(`/packer/vehicle/${defId}`)
     else if (username === 'solver' && password === 'solver') navigate('/solver')
-    else console.log('Invalid username or password')
+    else alert('Invalid username or password')
   }
   return (
     <div>
@@ -41,20 +63,6 @@ const Login = () => {
             Enter your account details below
           </p>
           <form className="flex flex-col" onSubmit={handleLogin}>
-            {/* <input
-              type="text"
-              placeholder="Email Address"
-              className={`my-4 ${styles.inputForm} `}
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              className={`my-4  ${styles.inputForm}`}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            /> */}
             <div
               onClick={() => setUserSelect(!userSelect)}
               className={`${

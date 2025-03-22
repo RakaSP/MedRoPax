@@ -56,9 +56,9 @@ const RenderPlotly = ({ container }) => {
   const [itemCount, setItemCount] = useState(1)
   const containerSize = [
     {
-      SizeX: container.SizeX,
-      SizeY: container.SizeY,
-      SizeZ: container.SizeZ,
+      SizeX: container.box_size[0],
+      SizeY: container.box_size[1],
+      SizeZ: container.box_size[2],
     },
   ]
 
@@ -330,17 +330,6 @@ const RenderPlotly = ({ container }) => {
           hoverinfo: 'none',
           showlegend: false,
         })
-        // gridLines.push({
-        //   type: "scatter3d",
-        //   mode: "text",
-        //   text: `${i * 10}`,
-        //   x: [container.SizeX + 10],
-        //   y: [i * 10],
-        //   z: [0],
-        //   textposition: "center",
-        //   hoverinfo: "none",
-        //   showlegend: false,
-        // });
       } else if (cam.z < 0) {
         gridLines.push({
           type: 'scatter3d',
@@ -352,17 +341,6 @@ const RenderPlotly = ({ container }) => {
           hoverinfo: 'none',
           showlegend: false,
         })
-        // gridLines.push({
-        //   type: "scatter3d",
-        //   mode: "text",
-        //   text: `${i * 10}`,
-        //   x: [container.SizeX + 10],
-        //   y: [i * 10],
-        //   z: [container.SizeZ],
-        //   textposition: "center",
-        //   hoverinfo: "none",
-        //   showlegend: false,
-        // });
       }
       if (cam.x >= 0) {
         gridLines.push({
@@ -452,6 +430,12 @@ const RenderPlotly = ({ container }) => {
           data={[...plotData, ...gridLines]}
           layout={layout}
           style={{ width: '100%', height: '70vh' }}
+          config={{
+            toImageButtonOptions: {
+              format: 'png',
+              scale: 20,
+            },
+          }}
           onRelayout={handleRelayout}
         />
       </div>

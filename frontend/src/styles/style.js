@@ -1,10 +1,3 @@
-/*
-Color
-normal text: 474554
-inactive/more dark: #3b3b3b or #5e5e5e
-highlight: #8083ff
-border: #D6F4FF
-*/
 const styles = {
   boxWidth: 'xl:max-w-[1280px] w-full',
 
@@ -16,7 +9,7 @@ const styles = {
   heading5: 'font-poppins font-semibold text-[16px] text-black mb-2',
   paragraph: 'font-poppins font-normal text-black text-[18px] leading-[30.8px]',
   sidebar_item:
-    'font-poppins font-semibold text-text_primary hover:text-highlight text-[18px] w-[100%] block py-[10px] px-[30px] text-left',
+    'font-poppins font-semibold text-text_primary hover:text-highlight text-[18px] w-[100%] block py-[10px] text-left',
   sidebar_item_sublink:
     'font-poppins font-semibold text-text_primary hover:text-highlight text-[16px] w-[100%] block py-[8px]',
   flexCenter: 'flex justify-center items-center',
