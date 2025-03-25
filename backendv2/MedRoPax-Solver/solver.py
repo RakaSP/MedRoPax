@@ -1,5 +1,6 @@
 import pathlib
 from random import seed
+from typing import Tuple
 import datetime
 
 import json
@@ -38,20 +39,43 @@ def read_instance_from_json(instance_filename)->VRP3D:
     return VRP3D.from_dict(data)
 
 
-def run(args):
+def run(args)->Tuple[Solution, float]:
     problem: VRP3D = read_instance_from_json(args.instance_filename)
-    # solution = deserialize_from_file(Solution, "sys.argv[2]")
+    
     for order in problem.order_list:
         order.pack_items_into_cardboard_boxes(problem.cardboard_list, args.min_cardboard_utility, args.insertion_mode, args.construction_mode)
     solution = saving(problem, args.insertion_mode, args.construction_mode)
-    generate_loading_plans(problem,  args.result_filename)
-    problem.reset(solution)
-    # solution = improve_tours_by_dp(solution, problem)
-    # problem.reset(solution)
-    save_solution_to_json(solution, args.result_filename)
+    cost = problem.total_cost
+    return problem, solution, cost
 
+def run_all_params(args):
+    best_solution: Solution = None
+    best_prob: VRP3D = None
+    best_solution_cost: float = 999999
+    for insertion_mode in ["first-fit","best-fit"]:
+        args.insertion_mode = insertion_mode
+        for i, construction_mode in enumerate(["wall-building", "layer-building","column-building"]):
+            args.construction_mode = construction_mode
+            if insertion_mode == "best-fit" and i>0:
+                continue
+            for zeta in [0.5, 0.6, 0.7, 0.8, 0.9, 0.95]:
+                args.min_cardboard_utility = zeta
+                prob, solution, cost = run(args)
+                if cost < best_solution_cost:
+                    best_prob, best_solution = prob, solution
+                    best_solution_cost = cost
+    return best_prob, best_solution, cost
+        
 
 if __name__ == "__main__":
     seed(datetime.datetime.now().timestamp())
     args = prepare_args()
-    run(args)
+    solution: Solution
+    problem: VRP3D
+    if args.best_config_mode:
+        problem, solution, cost = run_all_params(args)
+    else:
+        problem, solution, cost = run(args)
+    generate_loading_plans(problem,  args.result_filename)
+    save_solution_to_json(solution, args.result_filename)
+

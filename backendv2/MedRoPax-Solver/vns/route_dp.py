@@ -101,7 +101,7 @@ def improve_tours_by_dp(solution: Solution, problem: VRP3D):
     global distance_matrix
     distance_matrix = problem.distance_matrix
     for i in range(solution.num_vehicle):
-        print(i, len(solution.tour_list[i]))
+        # print(i, len(solution.tour_list[i]))
         if not solution.tour_list[i] or len(solution.tour_list[i])>24:
             continue
         original_distance_cost = problem.distance_cost_list[i]

@@ -35,5 +35,10 @@ def prepare_args():
                         help="Minimum cardboard box utility threshold (zeta in Algorithm 1)")
 
 
+    parser.add_argument("--best-config-mode",
+                        type=bool,
+                        default=False,
+                        help="if true, solve with all combinations of parameters and some zeta")
+
     args = parser.parse_args(sys.argv[1:])
     return args

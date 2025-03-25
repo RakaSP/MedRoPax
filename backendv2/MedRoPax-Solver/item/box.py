@@ -43,6 +43,7 @@ class Box(Item):
         self.filled_volume = 0
         self.temperature = temperature
         self.ep_list: np.ndarray = None
+        self.ep_spaces = np.asanyarray([self.volume], dtype=float)
         if is_sort_size:
             self.alternative_sizes = self.alternative_sizes[np.lexsort((-self.alternative_sizes[:,0], -self.alternative_sizes[:,1], -self.alternative_sizes[:,2]))]
         d_item1 = Item(uuid1(), np.asanyarray([size[0],size[1],1],dtype=np.int64),"dummy")
@@ -68,12 +69,14 @@ class Box(Item):
             self.weight = sum([p_item.weight for p_item in packed_items])
             self.filled_volume = sum([p_item.volume for p_item in packed_items])
         self.init_extreme_points(ep_list)
+        self.compute_ep_spaces()
+        
 
     def init_extreme_points(self, ep_list: np.ndarray = None):
         if ep_list is None:
-            self.ep_list = np.zeros((1,3), dtype=np.int64)
+            self.ep_list = np.zeros((1,3), dtype=np.int64)                
         else:
-            self.ep_list = np.copy(ep_list)
+            self.ep_list = np.copy(ep_list)   
 
     
     def is_insert_feasible(self, position:np.ndarray, item:Item) -> bool:
@@ -192,7 +195,6 @@ class Box(Item):
         self.ep_list = np.delete(self.ep_list, np.all(self.ep_list ==position,axis=-1), axis=0)
         sort_ep(self.ep_list, construction_mode)
         self.ep_spaces = self.compute_ep_spaces()
-        
         # self.visualize_packed_items()
 
 

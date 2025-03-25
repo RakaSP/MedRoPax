@@ -87,7 +87,7 @@ def find_ep(box_list: List[Box], item:Item, mode:str="first-fit"):
     ep_list = []
     for bi, box in enumerate(box_list):
         for ei, ep in enumerate(box.ep_list):
-            if not box.is_insert_feasible(ep, item):
+            if box.is_insert_feasible(ep, item):
                 if mode=="first-fit":
                     return bi, ei
                 ei_space = box.ep_spaces[ei]
@@ -113,7 +113,6 @@ def pack_items_to_box(box: Box,
             dup_item_list += [new_item]
     item_list = dup_item_list
     item_list = sorted(item_list, key=cmp_to_key(cmp_item_ah))
-    
     unpacked_items = []
     while len(item_list) > 0:
         item = item_list[0]
@@ -134,7 +133,6 @@ def pack_items_to_box(box: Box,
         for i in reversed(range(len(item_list))):
             if item_list[i].id == item.id:
                 del item_list[i]
-            
     return box, list(set(unpacked_items))
 
 def get_items_too_big_idx(item_list:List[Item], box_type_list:List[Box]):
@@ -226,8 +224,8 @@ def pack_items_to_boxes(box_type_list: List[Box],
         used_boxes += [new_box]
         item_list = n_unpacked_items
         if not new_box.packed_items:
-            break
-
+                break
+    
     # now if there are boxes not well-utilized
     # dissolve and pack to smaller boxes
     used_boxes_final = []
