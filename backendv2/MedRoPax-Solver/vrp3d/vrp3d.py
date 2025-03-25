@@ -85,7 +85,7 @@ class VRP3D:
             for i, order in enumerate(self.order_list):
                 self.order_list[i].reset()
             return
-            
+        
         for i, order in enumerate(self.order_list):
             self.order_list[i].reset(solution.packing_position_list[i], solution.insertion_order_list[i], solution.rotate_count_list[i])
         
@@ -97,7 +97,11 @@ class VRP3D:
             self.weight_cost_list[i] = self.vehicle_list[i].compute_weight_cost()
             tour_list_length = compute_tour_list_length(self.distance_matrix, solution.tour_list)
             self.distance_cost_list = [tour_list_length[i]*self.vehicle_list[i].cost_per_km for i in range(self.num_vehicle)]
-        
+    
+    @property
+    def total_cost(self):
+        return sum(self.distance_cost_list) + sum(self.weight_cost_list)
+             
     def to_dict(self):
         return {
             "product_type": [_.to_dict() for _ in self.product_types],
@@ -113,7 +117,6 @@ class VRP3D:
     def from_dict(cls, data):
         """Reconstruct the object from a dictionary."""
         product_types = [Medicine.from_dict(_) for _ in data["product_type"]]
-
         return cls(
             product_types = product_types,
             vehicle_list = [Vehicle.from_dict(_) for _ in data["vehicle_list"]],

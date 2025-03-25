@@ -28,9 +28,11 @@ def get_new_arrival_time(order_i:int, vec_i:int, prob:VRP3D, tour:List[int], arr
 
 def append_order(order_i:int, 
                  vec_i:int,
-                 problem:VRP3D) -> bool:
+                 problem:VRP3D,
+                 insertion_mode: str,
+                 construction_mode: str) -> bool:
     vec = problem.vehicle_list[vec_i]
     order = problem.order_list[order_i]        
     item_list = copy(order.packed_item_list)
-    is_packing_feasible, position_dict, insertion_order_dict, rotate_count_dict = add_items_to_box(vec.box, item_list)
+    is_packing_feasible, position_dict, insertion_order_dict, rotate_count_dict = add_items_to_box(vec.box, item_list, insertion_mode, construction_mode)
     return is_packing_feasible, position_dict, insertion_order_dict, rotate_count_dict

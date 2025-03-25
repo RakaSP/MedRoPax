@@ -89,12 +89,11 @@ def get_improved_tour(tour:List[int], original_distance_cost: float, cost_per_km
     best_cost = best_len*cost_per_km
     if best_cost > original_distance_cost:
         return old_tour
-    best_tour_idx = backtrack(tour,0,1)
+    best_tour_idx = backtrack(tour, 0, 1)
     best_tour = [tour[i] for i in best_tour_idx]
     best_tour = best_tour[1:]
     best_tour = [node-1 for node in best_tour]
     return best_tour
-    
 
 def improve_tours_by_dp(solution: Solution, problem: VRP3D):
     problem.reset(solution)
@@ -102,7 +101,7 @@ def improve_tours_by_dp(solution: Solution, problem: VRP3D):
     global distance_matrix
     distance_matrix = problem.distance_matrix
     for i in range(solution.num_vehicle):
-        print(i, len(solution.tour_list[i]))
+        # print(i, len(solution.tour_list[i]))
         if not solution.tour_list[i] or len(solution.tour_list[i])>24:
             continue
         original_distance_cost = problem.distance_cost_list[i]

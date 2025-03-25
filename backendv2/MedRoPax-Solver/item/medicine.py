@@ -1,6 +1,7 @@
 import enum
 from typing import Tuple
 import copy
+import uuid
 
 import numpy as np
 
@@ -81,8 +82,10 @@ class Medicine(Item):
     def from_id(product_types, ids):
         items = []
         for id in ids:
-            print(id)
+            # print(id)
             found_item = next((item for item in product_types if item.id == id), None)
-            print(found_item)
-            items += [copy.deepcopy(found_item)]
+            found_item = copy.deepcopy(found_item)
+            found_item.id = uuid.uuid4().int
+            # print(found_item)
+            items += [found_item]
         return items
