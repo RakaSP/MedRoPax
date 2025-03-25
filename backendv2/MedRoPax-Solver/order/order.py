@@ -26,9 +26,21 @@ class Order:
         self.id = id
         self.weight = sum([item.weight for item in self.item_list])
 
-    def pack_items_into_cardboard_boxes(self, box_list:List[Box]):
+    def pack_items_into_cardboard_boxes(self,
+                                        box_list:List[Box],
+                                        zeta: float,
+                                        insertion_mode: str,
+                                        construction_mode: str):
+        """_summary_
+
+        Args:
+            box_list (List[Box]): _description_
+            zeta (float): _description_
+            insertion_mode (str): _description_
+            construction_mode (str): _description_
+        """
         item_list = copy(self.item_list)
-        used_box, unpacked_items = pack_items_to_boxes(box_list, item_list)
+        used_box, unpacked_items = pack_items_to_boxes(box_list, item_list, zeta, insertion_mode, construction_mode)
         for bi, box in enumerate(used_box):
             used_box[bi].id = uuid4().int
             # used_box[bi].visualize_packed_items()

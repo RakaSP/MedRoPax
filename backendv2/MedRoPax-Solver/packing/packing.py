@@ -82,15 +82,29 @@ def cmp_item_ha(item1:Item, item2:Item):
     
     return 0
 
-def find_first_ep(box_list: List[Box], item:Item):
+def find_ep(box_list: List[Box], item:Item, mode:str="first-fit"):
+    # bi, ei, space_util
+    ep_list = []
     for bi, box in enumerate(box_list):
-        for ei, ep in enumerate(box.ep_list): 
+        for ei, ep in enumerate(box.ep_list):
             if not box.is_insert_feasible(ep, item):
-                continue
-            return bi, ei
-    return -1, -1
+                if mode=="first-fit":
+                    return bi, ei
+                ei_space = box.ep_spaces[ei]
+                utilized_space = item.volume/ei_space
+                ep_list += [(bi, ei, utilized_space)]
+    max_utilized_space = -1
+    chosen_bi, chosen_ei = -1, -1
+    for potential_pair in ep_list:
+        bi, ei, u = potential_pair
+        if u > max_utilized_space:
+            chosen_bi, chosen_ei = bi, ei
+    return chosen_bi, chosen_ei
 
-def pack_items_to_box(box: Box, item_list: List[Item]) -> Tuple[Box, List[Item]]:
+def pack_items_to_box(box: Box, 
+                      item_list: List[Item],
+                      insertion_mode:str = "first_fit",
+                      construction_mode:str = "wall-buidling") -> Tuple[Box, List[Item]]:
     dup_item_list = []
     for item in item_list:
         for r in range(6):
@@ -103,12 +117,14 @@ def pack_items_to_box(box: Box, item_list: List[Item]) -> Tuple[Box, List[Item]]
     unpacked_items = []
     while len(item_list) > 0:
         item = item_list[0]
-        box_i, ep_i = find_first_ep([box], item)
+        box_i:int
+        ep_i: int
+        box_i, ep_i = find_ep([box], item, insertion_mode)
         if ep_i == -1:
             unpacked_items += [item]
             del item_list[0]
             continue
-        box.insert(ep_i, item)
+        box.insert(ep_i, item, construction_mode)
         
         # remove the duplicate items, in unpacked items
         for i in reversed(range(len(unpacked_items))):
@@ -173,8 +189,10 @@ def get_best_box_idx(item_list:List[Item], box_type_list:List[Box]):
            b. box the items into a box
 """
 def pack_items_to_boxes(box_type_list: List[Box],
-        item_list: List[Item],
-        zeta: float=0.0) -> Tuple[List[Box], List[Item]]:
+                        item_list: List[Item],
+                        zeta: float=0.8,
+                        insertion_mode: str="first-fit",
+                        construction_mode: str="wall-building") -> Tuple[List[Box], List[Item]]:
     
     # if no boxes
     if not box_type_list:
@@ -204,7 +222,7 @@ def pack_items_to_boxes(box_type_list: List[Box],
         volume_list = [box.volume for box in best_box_type_list]
         new_box_type_i = find_smallest_fit_box(0, len(volume_list)-1, remaining_volume, volume_list)
         new_box = get_a_box_copy(best_box_type_list[new_box_type_i])
-        new_box, n_unpacked_items = pack_items_to_box(new_box, item_list)
+        new_box, n_unpacked_items = pack_items_to_box(new_box, item_list, insertion_mode, construction_mode)
         used_boxes += [new_box]
         item_list = n_unpacked_items
         if not new_box.packed_items:
@@ -229,7 +247,9 @@ def pack_items_to_boxes(box_type_list: List[Box],
     return used_boxes_final, unpacked_items         
 
 def add_items_to_box(box:Box, 
-                     item_list:List[Item])->Tuple[bool, Dict[str, np.ndarray], Dict[str,int], Dict[str,int]]:
+                     item_list:List[Item],
+                     insertion_mode: str,
+                     construction_mode:str)->Tuple[bool, Dict[str, np.ndarray], Dict[str,int], Dict[str,int]]:
     # duplicate items for each rotation
     dup_items: List[Item] = []
     for i, item in enumerate(item_list):
@@ -248,14 +268,14 @@ def add_items_to_box(box:Box,
     unpacked_items = []
     while len(item_list) > 0:
         item = item_list[0]
-        box_i, ep_i = find_first_ep([box], item)
+        box_i, ep_i = find_ep([box], item, insertion_mode)
         if ep_i == -1:
             unpacked_items += [item]
             del item_list[0]
             continue
 
         # succeeding in inserting
-        box.insert(ep_i, item)
+        box.insert(ep_i, item, construction_mode)
         packed_item_list += [item]
         position_dict[item.id] = item.position
         insertion_order_dict[item.id] = item.insertion_order

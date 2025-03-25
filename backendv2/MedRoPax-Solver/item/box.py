@@ -14,6 +14,17 @@ from item.utils import is_overlap_any_packed_items
 
 import os
 
+def sort_ep(ep_list: np.ndarray, construction_mode: str="wall-building"):
+    # if mode == "layer-building"
+    criteria = (ep_list[:,1], ep_list[:,0], ep_list[:,2])
+    
+    if construction_mode=="wall-building":
+        criteria = (ep_list[:,1], ep_list[:,2], ep_list[:,0])
+    elif construction_mode=="column-building":
+        criteria = (ep_list[:,0], ep_list[:,2], ep_list[:,1])
+    sorted_idx = np.lexsort(criteria)
+    ep_list = ep_list[sorted_idx]
+
 class Box(Item):
     def __init__(self, 
                  id: int,
@@ -64,12 +75,20 @@ class Box(Item):
         else:
             self.ep_list = np.copy(ep_list)
 
-    """ FEASIBLE IFF
-        1. placement does not cause item overflows edges
-        2. it does not overlap other boxes
-        3. alpha% of its bottom area are supported by other boxes or 
-    """
+    
     def is_insert_feasible(self, position:np.ndarray, item:Item) -> bool:
+        """ FEASIBLE IFF
+            1. placement does not cause item overflows edges
+            2. it does not overlap other boxes
+            3. alpha% of its bottom area are supported by other boxes or 
+
+        Args:
+            position (np.ndarray): _description_
+            item (Item): _description_
+
+        Returns:
+            bool: _description_
+        """
         # is_overflow = position[0] + item.size[0] > self.size[0] or \
         #     position[1] + item.size[1] > self.size[1] or \
         #     position[2] + item.size[2] > self.size[2]
@@ -103,8 +122,8 @@ class Box(Item):
         return self.filled_volume + item.volume <= self.volume and \
             self.weight + item.weight <= self.max_weight
     
-    """
-        new_eps = [
+    def insert(self, ep_i: int, item:Item, construction_mode: str="wall-building"):
+        """new_eps = [
             (ep_yx),
             (ep_yz),
             (ep_xy),
@@ -112,8 +131,12 @@ class Box(Item):
             (ep_zx),
             (ep_zy)
         ]
-    """
-    def insert(self, ep_i: int, item:Item):
+
+        Args:
+            ep_i (int): _description_
+            item (Item): _description_
+            construction_mode (str, optional): _description_. Defaults to "wall-building".
+        """
         position = self.ep_list[ep_i,:]
         self.filled_volume += item.volume
         self.weight += item.weight
@@ -167,7 +190,31 @@ class Box(Item):
         
         # remove inserted position from extreme points
         self.ep_list = np.delete(self.ep_list, np.all(self.ep_list ==position,axis=-1), axis=0)
+        sort_ep(self.ep_list, construction_mode)
+        self.ep_spaces = self.compute_ep_spaces()
+        
         # self.visualize_packed_items()
+
+
+    def compute_ep_spaces(self):
+        ep_spaces = np.zeros([len(self.ep_list),], dtype=float)
+        for ep_i, ep in enumerate(self.ep_list):
+            ep_volume = np.prod(self.size - ep)
+            # print(ep, ep_volume, self.size)
+            # get all overlapped items
+            # get how much of that item is inside the box of ep->upper right corner
+            # substract that much volume from ep_volume
+            for item in self.packed_items:
+                if np.all(item.position+item.size<ep):
+                    continue
+                pos_intersect = np.copy(item.position)
+                # print(pos_intersect)
+                pos_intersect = np.maximum(pos_intersect, ep)
+                overlapped_volume = np.prod(item.size+item.position-pos_intersect)
+                ep_volume -= overlapped_volume
+            ep_spaces[ep_i] = ep_volume
+        return ep_spaces
+            
 
     def plot_cube(self, ax, x, y, z, dx, dy, dz, color='red', text_annot:str=""):
         """ Auxiliary function to plot a cube. code taken somewhere from the web.  """
