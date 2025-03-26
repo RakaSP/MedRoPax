@@ -26,7 +26,7 @@ const PackerNav = () => {
   )
 
   const cardboardItems = packingInformation[indexOfVehicle]?.filter(
-    (item) => item.type === 'cardboard'
+    (item) => item.type === 'box'
   )
 
   const links = [

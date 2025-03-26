@@ -91,16 +91,14 @@ app.post("/solve", upload.single("file"), (req, res) => {
     let argsString = "";
 
     if (args["--best-config-mode"] === "true") {
-      argsString = "--best-config-mode true"; // Ignore other arguments
+      argsString = "--best-config-mode true";
     } else {
       const filteredArgs = { ...args };
 
-      // If insertion mode is best-fit, remove construction mode argument
       if (filteredArgs["--insertion-mode"] === "best-fit") {
         delete filteredArgs["--construction-mode"];
       }
 
-      // Convert to string
       argsString = Object.entries(filteredArgs)
         .map(([key, value]) => `${key} ${value}`)
         .join(" ");
@@ -124,7 +122,7 @@ app.post("/solve", upload.single("file"), (req, res) => {
     const resultFilePath = path.join(
       __dirname,
       "MedRoPax-Solver",
-      `${originalFileNameWithoutExt}_result.json`
+      `problem_result.json`
     );
 
     const dirPath = path.join(

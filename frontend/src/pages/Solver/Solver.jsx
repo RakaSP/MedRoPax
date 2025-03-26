@@ -90,6 +90,7 @@ const Vehicle = () => {
 
         localStorage.setItem('mappedData', JSON.stringify(tourList))
         localStorage.setItem('result', JSON.stringify(result))
+        setLoading(false)
         alert('Problem solved successfully')
       })
       .catch((error) => {
