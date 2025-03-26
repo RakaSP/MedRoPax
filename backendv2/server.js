@@ -122,7 +122,7 @@ app.post("/solve", upload.single("file"), (req, res) => {
     const resultFilePath = path.join(
       __dirname,
       "MedRoPax-Solver",
-      `problem_result.json`
+      `${originalFileNameWithoutExt}_result.json`
     );
 
     const dirPath = path.join(
