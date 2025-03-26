@@ -94,6 +94,9 @@ const Vehicle = () => {
         alert('Problem solved successfully')
       })
       .catch((error) => {
+        setFile(null)
+        setLoading(false)
+        alert(error.message)
         console.error('Error uploading file:', error)
       })
   }
