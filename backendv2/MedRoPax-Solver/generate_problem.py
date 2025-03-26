@@ -70,10 +70,10 @@ def generate_product_types() -> list[Medicine]:
     product_types = []
     for _ in range(10):
         id_ = uuid4().int
-        weight = np.random.uniform(1, 10)
-        length = np.random.uniform(1, 10)
-        width = np.random.uniform(1, 10)
-        height = np.random.uniform(1, 10)
+        weight = np.random.uniform(1, 3)
+        length = np.random.uniform(5, 10)
+        width = np.random.uniform(5, 10)
+        height = np.random.uniform(5, 10)
         size = np.array([length, width, height])
         need_refrigeration = np.random.uniform(0, 1) > 0.5
         is_fragile = np.random.uniform(0, 1) > 0.5
@@ -104,10 +104,10 @@ def generate_orders(product_types: list[Medicine]) -> list[Order]:
 def generate_vehicles(max_duration) -> list[Vehicle]:
     vehicles = []
     for _ in range(10):
-        max_weight = np.random.uniform(1, 10)
-        length = np.random.uniform(10000, 100000)
-        width = np.random.uniform(10000, 100000)
-        height = np.random.uniform(10000, 100000)
+        max_weight = np.random.uniform(500, 600)
+        length = np.random.uniform(200, 500)
+        width = np.random.uniform(200, 500)
+        height = np.random.uniform(200, 500)
         size = np.array([length, width, height])
         cost_per_km = np.random.uniform(10, 100)
         cost_per_kg = np.random.uniform(10, 100)
@@ -126,10 +126,10 @@ def generate_cardboard_boxes() -> list[Cardboard]:
     for _ in range(100):
         id_ = uuid4().int
         name_ = fake.cardboard_box_name()
-        max_weight = np.random.uniform(1, 10)
-        length = np.random.uniform(1000, 10000)
-        width = np.random.uniform(1000, 10000)
-        height = np.random.uniform(1000, 10000)
+        max_weight = np.random.uniform(100, 150)
+        length = np.random.uniform(50, 80)
+        width = np.random.uniform(50, 80)
+        height = np.random.uniform(50, 80)
         size = np.array([length, width, height])
 
         cardboard_boxes += [Cardboard(id_, size, max_weight, name=name_)]

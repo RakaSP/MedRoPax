@@ -87,6 +87,24 @@ app.post("/solve", upload.single("file"), (req, res) => {
     if (!req.file) {
       return res.status(400).send("No file uploaded.");
     }
+    let args = req.body;
+    let argsString = "";
+
+    if (args["--best-config-mode"] === "true") {
+      argsString = "--best-config-mode true"; // Ignore other arguments
+    } else {
+      const filteredArgs = { ...args };
+
+      // If insertion mode is best-fit, remove construction mode argument
+      if (filteredArgs["--insertion-mode"] === "best-fit") {
+        delete filteredArgs["--construction-mode"];
+      }
+
+      // Convert to string
+      argsString = Object.entries(filteredArgs)
+        .map(([key, value]) => `${key} ${value}`)
+        .join(" ");
+    }
 
     const uploadedFilePath = req.file.path;
     const originalFilename = req.file.originalname;
@@ -101,7 +119,7 @@ app.post("/solve", upload.single("file"), (req, res) => {
       originalFilename
     );
     const scriptPath = "./solver.py";
-    const args = `${originalFilename} ${originalFileNameWithoutExt}_result.json`;
+    args = `--instance-filename ${originalFilename} --result-filename ${originalFileNameWithoutExt}_result.json ${argsString}`;
 
     const resultFilePath = path.join(
       __dirname,
@@ -114,6 +132,8 @@ app.post("/solve", upload.single("file"), (req, res) => {
       "MedRoPax-Solver",
       `${originalFileNameWithoutExt}_result`
     );
+
+    console.log(args);
 
     exec(
       `.\\vrp-venv\\Scripts\\python.exe ${scriptPath} ${args}`,

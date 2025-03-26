@@ -24,6 +24,11 @@ const PackerNav = () => {
   let indexOfVehicle = vehicleList.findIndex(
     (detail) => detail.id === vehicleId
   )
+
+  const cardboardItems = packingInformation[indexOfVehicle]?.filter(
+    (item) => item.type === 'cardboard'
+  )
+
   const links = [
     {
       title: 'Vehicle',
@@ -32,7 +37,7 @@ const PackerNav = () => {
     },
     {
       title: 'Cardboard',
-      link: `/packer/vehicle/${vehicleList[0].id}/cardboard/${packingInformation[0]?.[0]?.id}`,
+      link: `/packer/vehicle/${vehicleList[0].id}/cardboard/${cardboardItems[0]?.id}`,
       icon: faBoxesPacking,
     },
   ]
@@ -71,7 +76,14 @@ const PackerNav = () => {
               className={`${styles.sidebar_item} flex justify-between flex-row`}
               activeClassName="active"
               to={item.link}
-              onClick={() => handleNavItemClick(index)}
+              onClick={(e) => {
+                if (item.title === 'Cardboard' && cardboardItems.length === 0) {
+                  e.preventDefault()
+                  alert('⚠ No cardboard inside the selected vehicle!')
+                } else {
+                  handleNavItemClick(index)
+                }
+              }}
             >
               <div>
                 <FontAwesomeIcon

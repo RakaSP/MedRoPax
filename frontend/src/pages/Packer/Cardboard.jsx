@@ -9,6 +9,7 @@ const Cardboard = () => {
     skip = true
   }
   let packingInfo
+
   if (!skip) {
     vehicleId = Number(vehicleId)
     cardboardId = Number(cardboardId)
@@ -25,7 +26,7 @@ const Cardboard = () => {
       (detail) => detail.id === cardboardId
     )
     packingInfo = packingInfo[indexOfCardboard]
-
+    console.log(packingInfo)
     packingInfo = {
       ID: packingInfo.id,
       Type: 'CardboardContainer',
