@@ -1,5 +1,5 @@
 @echo off
 cd ..\frontend
-start serve -s build -p 3000
+start npm run start
 cd ..\backendv2
 node server.js

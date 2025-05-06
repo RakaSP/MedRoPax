@@ -144,15 +144,6 @@ const Vehicle = () => {
   return (
     <div className="py-10 px-10">
       <h4 className="text-3xl font-bold text-text_primary mb-5">Solver</h4>
-      <div className="p-4">
-        <p className="text-gray-800 text-lg">Don't have a problem yet?</p>
-        <button
-          onClick={handleClickGenerateProblem}
-          className="bg-blue-500 text-white py-2 px-4 text-lg rounded-md mr-2 hover:bg-blue-600"
-        >
-          Click here to generate problem
-        </button>
-      </div>
       <div className="flex flex-row">
         <div className="border-dashed border-2 hover:border-[#3e4756] transition duration-200 rounded-lg text-lg font-roboto flex items-center gap-4 w-[420px] h-[160px] bg-white justify-center">
           {file === null ? (
