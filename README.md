@@ -129,7 +129,7 @@ The admin account page gives a high level overview of the solution data based on
 - The list of orders, along with their price, customer location, delivery times, etc.
 
 <div style="text-align: center;">
-<img src="img/admin_page_overview.png" alt="Description" width="750" height="500">
+<img src="img/admin_page_overview.png" alt="Description">
 </div>
 
 ## Packer Account
