@@ -53,7 +53,8 @@ const Vehicle = () => {
         arrivalTimeList = arrivalTimeList.map((arrivalTime) => {
           return arrivalTime.map((deliveryTime) => {
             const [hours, minutes] = startTime.split(':').map(Number)
-            const totalMinutes = hours * 60 + minutes + Math.floor(deliveryTime)
+            const totalMinutes =
+              hours * 60 + minutes + Math.floor(60 * deliveryTime)
 
             const newHours = Math.floor(totalMinutes / 60)
             const newMinutes = totalMinutes % 60

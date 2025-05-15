@@ -8,18 +8,45 @@ const Vehicles = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [filteredVehiclesData, setFilteredVehiclesData] = useState([])
   const [searchValue, setSearchValue] = useState('')
-  const itemsPerPage = 16
+  const itemsPerPage = 4
   let vehicles =
     JSON.parse(localStorage.getItem('problem')).vehicle_list || null
   const packingInformation = JSON.parse(localStorage.getItem('mappedData'))
 
+  const distanceMatrix = JSON.parse(
+    localStorage.getItem('problem')
+  ).distance_matrix
+  const orderList = JSON.parse(localStorage.getItem('problem')).order_list
+
   vehicles = vehicles.map((vehicle, index) => {
     const length = packingInformation[index].length
+    vehicle.shipment = packingInformation[index]
     if (length === 0) {
       vehicle.status = 'available'
     } else {
       vehicle.status = 'in transit'
     }
+
+    let orderIndexList = []
+    let distanceList = []
+    vehicle.shipment.map((order, index) => {
+      const orderIndex = orderList.findIndex((orderA) => orderA.id === order.id)
+      orderIndexList.push(orderIndex)
+      distanceList.push(
+        index === 0
+          ? distanceMatrix[0][orderIndex + 1]
+          : distanceMatrix[orderIndexList[index - 1] + 1][
+              orderIndexList[index] + 1
+            ]
+      )
+    })
+
+    const totalDistance = distanceList.reduce(
+      (total, distance) => total + distance,
+      0
+    )
+
+    vehicle.total_distance = totalDistance
 
     let totalWeight = 0
 
@@ -29,8 +56,11 @@ const Vehicles = () => {
       })
     })
 
-    vehicle.total_weight = totalWeight / 1000
+    vehicle.total_weight = totalWeight
 
+    vehicle.total_cost =
+      vehicle.total_weight * vehicle.cost_per_kg +
+      vehicle.total_distance * vehicle.cost_per_km
     return vehicle
   })
 
@@ -76,9 +106,9 @@ const Vehicles = () => {
     const startIndex = (currentPage - 1) * itemsPerPage
     const endIndex = startIndex + itemsPerPage
     const currentVehicles = filteredVehiclesData.slice(startIndex, endIndex)
-
+    console.log(currentVehicles)
     return (
-      <div className="grid justify-start mb-4 gap-4 grid-cols-4 ">
+      <div className="grid justify-start mb-4 gap-4 grid-cols-2 ">
         {currentVehicles.map((vehicle) => (
           <div
             className="relative py-4 px-3 rounded-md border-2 border-gray-200 shadow-md bg-bg_card text-lg"
@@ -86,7 +116,7 @@ const Vehicles = () => {
           >
             <div className="flex flex-row justify-between mb-1 font-poppins">
               <div className="font-[500]">
-                <span className="font-semibold"> {vehicle.id}</span>
+                <span className="font-semibold">Vehicle ID: {vehicle.id}</span>
               </div>
               <div className=" font-semibold text-[green]">
                 {vehicle.status}
@@ -95,20 +125,37 @@ const Vehicles = () => {
             <div className="flex flex-row justify-between">
               <div className="basis-2/5 flex flex-col">
                 <div>
+                  <div className="text-text_primary text-sm">Vehicle Type</div>
+                  <div className="font-semibold">{vehicle.vehicle_type}</div>
+                </div>
+                <div>
                   <div className="text-text_primary text-sm">Weight (KG)</div>
                   <div className="font-semibold">
                     {vehicle.total_weight.toFixed(2)}/
                     {vehicle.box_max_weight.toFixed(2)}
                   </div>
                 </div>
+                <div>
+                  <div className="text-text_primary text-sm">Distance (KM)</div>
+                  <div className="font-semibold">
+                    {vehicle.total_distance.toFixed(2)}
+                  </div>
+                </div>
+
+                <div>
+                  <div className="text-text_primary text-sm">Shipment Cost</div>
+                  <div className="font-semibold">
+                    {vehicle.total_cost.toFixed(2)}
+                  </div>
+                </div>
               </div>
               <div className="basis-3/5 flex items-center justify-center relative">
                 <img src={truck2d} alt="img" className="object-fit" />
-                {vehicle.refrigerated && (
+                {vehicle.is_reefer === true && (
                   <img
                     src={icecube}
                     alt=""
-                    className="absolute top-1/3 left-1/2 w-16 -translate-y-1/2"
+                    className="absolute top-1/3 left-1/2 w-24 -translate-y-1/2"
                   />
                 )}
               </div>
@@ -132,7 +179,6 @@ const Vehicles = () => {
             {[
               { id: 0, status: 'All Vehicles' },
               { id: 1, status: 'Available' },
-
               { id: 3, status: 'In Transit' },
             ].map((item, index) => (
               <div
