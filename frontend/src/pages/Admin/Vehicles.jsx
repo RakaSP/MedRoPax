@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styles from '../../styles/style'
 import '../../styles/index.scss'
-import { icecube } from '../../assets/EmployeePage'
+import { refrigerated } from '../../assets/EmployeePage'
 import { truck2d } from '../../assets/EmployeePage'
 const Vehicles = () => {
   const [activeStatus, setActiveStatus] = useState(0)
@@ -153,9 +153,9 @@ const Vehicles = () => {
                 <img src={truck2d} alt="img" className="object-fit" />
                 {vehicle.is_reefer === true && (
                   <img
-                    src={icecube}
+                    src={refrigerated}
                     alt=""
-                    className="absolute top-1/3 left-1/2 w-24 -translate-y-1/2"
+                    className="absolute top-1/3 left-1/2 w-28 -translate-y-1/2"
                   />
                 )}
               </div>
