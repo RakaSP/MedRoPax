@@ -1,11 +1,11 @@
 # MedRoPax
 
-MedRoPax is a web-based software designed to address Heterogeneous Vehicle Routing Problems with 3D Loading (3LHVRP) and cardboard box packing. MedRoPax offers an automated solver for such problems. The problem constraints are based on practical
+MedRoPax [[1]](#1) is a web-based software designed to address Heterogeneous Vehicle Routing Problems with 3D Loading (3LHVRP) and cardboard box packing. MedRoPax offers an automated solver for such problems. The problem constraints are based on practical
 constraints in 3LHVRP. Interested readers
 are referred to a comprehensive discussion
-on practical 3LHVRP constraints in [[1]](#1).
+on practical 3LHVRP constraints in [[2]](#2).
 
-MedRoPax uses a straightforward two-stage optimization method, where the box packing is solved in the first stage, and the remaining 3LHVRP is solved by Adaptive Large Neighborhood Search (ALNS) [[2]](#2) in the second stage. MedRoPax provides clear visualization of the generated routes, packing, and loading plans. It also generates the loading manifest to help warehouse staff load the supplies based on the generated loading plan. Finally, the flexible input customization allows for solving various operational scenarios and even other problem formulations.
+MedRoPax uses a straightforward two-stage optimization method, where the box packing is solved in the first stage, and the remaining 3LHVRP is solved by Adaptive Large Neighborhood Search (ALNS) [[3]](#3) in the second stage. MedRoPax provides clear visualization of the generated routes, packing, and loading plans. It also generates the loading manifest to help warehouse staff load the supplies based on the generated loading plan. Finally, the flexible input customization allows for solving various operational scenarios and even other problem formulations.
 
 # Setup
 
@@ -217,12 +217,18 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 # References
 
 <a id="1">[1]</a>
+R. Prietno et al., “MedRoPax: A comprehensive software for solving heterogeneous vehicle routing problem with 3D loading constraints and cardboard box packing for medical supply distribution,” Software Impacts, vol. 25, p. 100763, Jul. 2025, doi:[10.1016/j.simpa.2025.100763](https://doi.org/10.1016/j.simpa.2025.100763).
+
+<a id="2">[2]</a>
 C. Krebs, J. F. Ehmke, H. Koch, Advanced loading constraints for 3d
 vehicle routing problems, OR Spectrum 43 (4) (2021) 835–875. doi:
 [10.1007/s00291-021-00645-w](https://doi.org/10.1007/s00291-021-00645-w).
 
-<a id="2">[2]</a>
+<a id="3">[3]</a>
 L. Wei, Z. Zhang, A. Lim, An adaptive variable neighborhood search for a
 heterogeneous fleet vehicle routing problem with three-dimensional load-
 ing constraints, IEEE Computational Intelligence Magazine 9 (4) (2014)
 18–30. doi:[10.1109/MCI.2014.2350933](https://doi.org/10.1109/MCI.2014.2350933).
+
+
+
